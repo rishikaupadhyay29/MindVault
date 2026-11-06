@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>MindVault</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{--bg:#050711;--navy:#0B1020;--surf:#121A2D;--vio:#8B5CF6;--cy:#22D3EE;--lav:#C4B5FD;--tx:#F4F5FF;--tx2:#9AA7C2;--bd:rgba(255,255,255,.08);color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{background:radial-gradient(60% 50% at 80% 0%,rgba(139,92,246,.28),transparent 70%),radial-gradient(50% 40% at 10% 100%,rgba(34,211,238,.12),transparent 70%),var(--bg);color:var(--tx);font:14px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;overflow:hidden}
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+.app{position:relative;z-index:1;display:flex;gap:14px;height:100%;padding:14px}
+.glass{background:rgba(18,26,45,.6);border:1px solid var(--bd);backdrop-filter:blur(16px);border-radius:18px}
+nav{width:200px;flex:none;padding:16px 10px;display:flex;flex-direction:column;gap:4px}
+.logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:16px;padding:0 10px 14px}
+.logo i{width:22px;height:22px;border-radius:7px;background:linear-gradient(135deg,var(--vio),var(--cy));box-shadow:0 0 14px var(--vio)}
+nav a{display:flex;gap:10px;align-items:center;padding:9px 12px;border-radius:10px;color:var(--tx2);text-decoration:none;cursor:pointer;transition:.2s}
+nav a:hover{background:rgba(255,255,255,.05);color:var(--tx)}
+nav a.on{background:linear-gradient(90deg,rgba(139,92,246,.35),rgba(139,92,246,.1));color:var(--tx);box-shadow:inset 0 0 0 1px rgba(139,92,246,.4)}
+nav .sp{flex:1}.av{width:30px;height:30px;border-radius:50%;background:var(--vio);display:grid;place-items:center;font-weight:600;margin:6px 10px}
+main{flex:1;overflow:auto;padding:26px 30px;min-width:0}
+section{display:none;animation:in .35s ease}section.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(8px)}}
+h1{font-size:30px;margin:0 0 4px;font-weight:700}h2{font-size:22px;margin:0 0 4px}h3{font-size:14px;margin:0}
+.sub{color:var(--tx2);margin:0 0 18px}
+.hero{background:linear-gradient(90deg,var(--vio),var(--cy));-webkit-background-clip:text;background-clip:text;color:transparent;font-size:40px}
+.btn{border:1px solid var(--bd);background:rgba(255,255,255,.05);color:var(--tx);padding:9px 16px;border-radius:10px;cursor:pointer;font:inherit;transition:.2s}
+.btn:hover{border-color:var(--vio)}.btn.p{background:linear-gradient(90deg,var(--vio),#6d4ae0);border-color:transparent;box-shadow:0 0 18px rgba(139,92,246,.4)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:20px 0}
+.stat{padding:14px 16px}.stat b{display:block;font-size:26px;color:var(--lav)}.stat span{color:var(--tx2);font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.card{padding:14px;cursor:pointer;transition:.2s}.card:hover{border-color:rgba(139,92,246,.6);transform:translateY(-2px);box-shadow:0 8px 28px rgba(139,92,246,.18)}
+.card p{color:var(--tx2);font-size:12px;margin:6px 0 10px}.meta{color:var(--tx2);font-size:11px;margin-top:8px}
+.tag{display:inline-block;padding:2px 9px;border-radius:99px;font-size:11px;background:rgba(139,92,246,.2);color:var(--lav);margin-right:5px;cursor:pointer;border:1px solid rgba(139,92,246,.3)}
+.tag.on{background:var(--vio);color:#fff}
+input,textarea{width:100%;background:rgba(5,7,17,.6);border:1px solid var(--bd);color:var(--tx);border-radius:12px;padding:12px 14px;font:inherit;outline:none}
+input:focus,textarea:focus{border-color:var(--vio);box-shadow:0 0 0 3px rgba(139,92,246,.2)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.between{justify-content:space-between}
+.res{padding:14px;margin-bottom:10px;cursor:pointer}.res:hover{border-color:var(--vio)}
+.score{margin-left:auto;color:var(--cy);background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.3);padding:2px 10px;border-radius:99px;font-size:12px}
+mark{background:rgba(34,211,238,.2);color:var(--tx);border-radius:3px;padding:0 2px}
+.chat{display:flex;flex-direction:column;gap:12px;height:calc(100% - 150px);min-height:260px;overflow:auto;padding:4px}
+.msg{max-width:78%;padding:12px 14px;border-radius:14px;white-space:pre-wrap}
+.msg.u{align-self:flex-end;background:rgba(139,92,246,.3)}.msg.a{background:rgba(18,26,45,.8);border:1px solid var(--bd)}
+.src{display:inline-block;margin:8px 6px 0 0;padding:4px 10px;border-radius:8px;font-size:12px;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.3);color:var(--cy);cursor:pointer}
+.sug{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+#uni{width:100%;height:calc(100vh - 260px);min-height:320px;border-radius:18px;display:block;cursor:grab}
+.set{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--bd)}
+.sw{width:40px;height:22px;border-radius:99px;background:#2a3350;position:relative;cursor:pointer;border:0;transition:.2s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.2s}
+.sw.on{background:var(--vio)}.sw.on::after{left:21px}
+.ok{color:#4ade80;background:rgba(74,222,128,.12);padding:2px 10px;border-radius:8px;font-size:12px}
+#cmd{position:fixed;inset:0;background:rgba(5,7,17,.7);display:none;place-items:start center;padding-top:15vh;z-index:9}
+#cmd.on{display:grid}#cmd .box{width:min(520px,92vw);padding:12px}
+#cmd a{display:flex;justify-content:space-between;padding:10px 12px;border-radius:10px;cursor:pointer;color:var(--tx2)}
+#cmd a:hover,#cmd a.f{background:rgba(139,92,246,.25);color:var(--tx)}
+.edit{min-height:240px;margin-top:12px}
+@media(max-width:800px){.app{flex-direction:column;padding:8px}nav{width:auto;flex-direction:row;overflow-x:auto;padding:8px}.logo,nav .sp,nav .av{display:none}nav a{white-space:nowrap}main{padding:16px}.hero{font-size:30px}.msg{max-width:92%}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.neb{position:fixed;border-radius:50%;z-index:0;pointer-events:none;animation:drift 40s ease-in-out infinite alternate}
+.n1{width:62vw;height:62vw;left:-16vw;top:-22vw;background:radial-gradient(circle,rgba(139,92,246,.4),transparent 65%)}
+.n2{width:52vw;height:52vw;right:-12vw;bottom:-20vw;background:radial-gradient(circle,rgba(34,211,238,.24),transparent 65%);animation-duration:56s;animation-direction:alternate-reverse}
+@keyframes drift{to{transform:translate(6vw,4vw) scale(1.15)}}
+@keyframes in{from{opacity:0;transform:translateY(14px) scale(.99)}}
+nav{margin:4px 0 4px 4px;border-radius:28px;transition:width .35s cubic-bezier(.4,0,.2,1);box-shadow:0 24px 70px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.1)}
+nav.mini{width:70px}nav.mini .t{display:none}nav.mini a{justify-content:center;padding:11px 0}nav.mini .logo{flex-direction:column;gap:10px;padding:0 0 12px}
+nav .ic{width:20px;text-align:center;font-size:16px}nav a{border-radius:14px}
+nav a.on{background:linear-gradient(90deg,rgba(139,92,246,.45),rgba(34,211,238,.1));box-shadow:0 0 24px rgba(139,92,246,.45),inset 0 0 0 1px rgba(196,181,253,.3)}
+.tg{margin-left:auto;background:none;border:0;color:var(--tx2);cursor:pointer;font-size:18px;transition:.3s}nav.mini .tg{margin:0;transform:rotate(180deg)}
+.prof{display:flex;align-items:center;border-top:1px solid var(--bd);padding-top:8px}
+main{background:none;border:0;backdrop-filter:none;padding:22px 34px}
+.big{font-size:clamp(44px,5.6vw,80px);line-height:1;font-weight:300;letter-spacing:-.02em;margin:0 0 14px}
+.big em{font-style:normal;font-weight:600;background:linear-gradient(90deg,var(--lav),var(--cy));-webkit-background-clip:text;background-clip:text;color:transparent}
+#home .btn{padding:12px 24px;border-radius:99px}
+.hero2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:10px;align-items:center;min-height:58vh}
+.mets{display:flex;gap:34px;margin-top:38px}.mets div{border-left:1px solid var(--bd);padding-left:14px}
+.mets b{display:block;font-size:36px;font-weight:300;font-variant-numeric:tabular-nums}.mets span{color:var(--tx2);font-size:12px}
+.orbw{position:relative;height:min(520px,60vh)}#orb{width:100%;height:100%;display:block}
+.otip{display:none;position:absolute;pointer-events:none;background:rgba(18,26,45,.92);border:1px solid var(--bd);padding:4px 10px;border-radius:8px;font-size:12px;white-space:nowrap}
+.kick{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--cy)}
+.lower{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:28px;margin-top:18px}
+.eds{display:grid;grid-template-columns:1.3fr 1fr;gap:16px;margin-top:12px}.eds .e0{grid-row:span 2}
+.ed{padding:22px;border-radius:26px;cursor:pointer;background:linear-gradient(160deg,rgba(139,92,246,.2),rgba(18,26,45,.3));transition:.3s}
+.ed:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(139,92,246,.28),0 0 0 1px rgba(196,181,253,.25)}
+.ed h3{font-family:Georgia,serif;font-weight:400;font-size:19px;margin:8px 0}.e0 h3{font-size:28px;line-height:1.15}.ed p{color:var(--tx2);font-size:13px}
+.disc{padding:22px;border-radius:28px;background:radial-gradient(120% 80% at 100% 0,rgba(34,211,238,.15),transparent 60%),rgba(18,26,45,.5);border:1px solid var(--bd)}
+.di{padding:10px 0;border-bottom:1px solid var(--bd);cursor:pointer;font-size:13px}.di:hover b{color:var(--cy)}
+.card.glass{border-color:transparent;border-radius:22px;background:linear-gradient(160deg,rgba(139,92,246,.14),rgba(18,26,45,.45));backdrop-filter:none}
+.card:hover{box-shadow:0 18px 50px rgba(139,92,246,.25),0 0 0 1px rgba(196,181,253,.25)}
+.card h3{font-family:Georgia,serif;font-weight:500;font-size:17px}
+#lib h2{font-family:Georgia,serif;font-weight:400;font-size:40px}#notes .card:first-child{grid-column:span 2}
+#search{max-width:780px;margin:5vh auto 0}#search h2{font-size:38px;text-align:center;font-weight:300}#search .sub{text-align:center}
+#sq{font-size:20px;padding:20px 26px;border-radius:99px;box-shadow:0 0 50px rgba(139,92,246,.25)}
+.res.glass{border:0;border-left:2px solid var(--vio);border-radius:6px 18px 18px 6px}
+.ai-orb{width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,var(--lav) 25%,var(--vio) 65%,transparent 72%);box-shadow:0 0 24px var(--vio);animation:pulse 4s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.18);box-shadow:0 0 38px var(--cy)}}
+#uni{background:radial-gradient(circle,rgba(139,92,246,.18),rgba(5,7,17,.5) 70%);border-radius:28px}
+#settings{max-width:600px;margin:4vh auto 0}#settings h2{font-weight:300;font-size:34px}
+#diagnostics{font-family:ui-monospace,Consolas,monospace}
+@media(max-width:800px){nav{width:auto!important;margin:0;border-radius:18px;flex-direction:row}.tg,.prof{display:none}.hero2,.lower,.eds{grid-template-columns:1fr}.eds .e0{grid-row:auto}#notes .card:first-child{grid-column:auto}.orbw{height:340px}.mets{gap:18px;flex-wrap:wrap}main{padding:16px}}
+.st{font-size:11px;color:var(--tx2)}.st i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--cy);margin-right:5px;animation:pulse2 1.2s infinite}
+@keyframes pulse2{50%{opacity:.25}}.ok2{color:#86efac}.bad{color:#fca5a5}.st a{color:var(--lav);cursor:pointer;text-decoration:underline}
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;background:rgba(18,26,45,.95);border:1px solid var(--bd);padding:10px 18px;border-radius:99px;z-index:20;transition:.3s;pointer-events:none}
+#toast.on{opacity:1;transform:translate(-50%,0)}#toast.bad{border-color:#f87171}
+#auth{position:fixed;inset:0;z-index:30;display:none;place-items:center;background:rgba(5,7,17,.55);backdrop-filter:blur(6px);padding:16px}
+.authbox{width:min(400px,100%);padding:28px;display:flex;flex-direction:column;gap:12px}.authbox h2,.authbox p{margin:0}
+.md h2,.md h3,.md h4,.md h5{font-family:Georgia,serif;font-weight:500;margin:14px 0 6px}.md p{margin:6px 0}.md code{background:rgba(139,92,246,.2);padding:1px 6px;border-radius:6px}
+.md pre{background:rgba(5,7,17,.7);padding:12px;border-radius:12px;overflow:auto}.md pre code{background:none;padding:0}
+.md blockquote{border-left:3px solid var(--vio);margin:8px 0;padding-left:12px;color:var(--tx2)}.md a{color:var(--cy)}.md ul,.md ol{padding-left:22px}
+.bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+select{background:rgba(5,7,17,.6);color:var(--tx);border:1px solid var(--bd);border-radius:10px;padding:9px 12px;font:inherit}
+.uwrap{position:relative}#uinfo{position:absolute;right:14px;top:14px;width:min(290px,60%);padding:14px;display:none;max-height:80%;overflow:auto}
+.msg .body{white-space:pre-wrap}.msg .body.md{white-space:normal}.msg .meta{margin:0 0 6px}
+.fld{display:flex;flex-direction:column;gap:6px;margin:10px 0}.fld label{color:var(--tx2);font-size:12px}
+.mdprev{min-height:200px;margin-top:12px;padding:6px 4px}
+</style></head>
+<body>
+<div class="neb n1" aria-hidden="true"></div><div class="neb n2" aria-hidden="true"></div><canvas id="stars" aria-hidden="true"></canvas>
+<div id="auth"><div class="glass authbox"><div class="logo" style="padding:0"><i></i><span>MindVault</span></div>
+<h2 id="atitle">Welcome back</h2><p class="sub" id="asub">Sign in to your knowledge universe.</p>
+<input id="an" placeholder="Your name" autocomplete="name" style="display:none" aria-label="Your name">
+<input id="ae" type="email" placeholder="Email" autocomplete="email" aria-label="Email">
+<input id="ap" type="password" placeholder="Password (min 8 characters)" autocomplete="current-password" aria-label="Password">
+<p id="aerr" class="bad" role="alert"></p><button class="btn p" id="abtn" onclick="authSubmit()">Sign in</button>
+<p class="sub"><a class="tag" id="aswitch" onclick="setAuthMode()">Create an account</a></p></div></div>
+<div class="app" id="shell" style="display:none">
+<nav class="glass" aria-label="Main">
+<div class="logo"><i></i><span class="t">MindVault</span><button class="tg" onclick="this.closest('nav').classList.toggle('mini')" aria-label="Collapse navigation">‹</button></div>
+<a data-v="home"><span class="ic">⌂</span><span class="t">Home</span></a><a data-v="library"><span class="ic">▤</span><span class="t">Library</span></a><a data-v="search"><span class="ic">⌕</span><span class="t">Search</span></a><a data-v="companion"><span class="ic">✦</span><span class="t">AI Companion</span></a><a data-v="universe"><span class="ic">◎</span><span class="t">Universe</span></a><a data-v="settings"><span class="ic">⚙</span><span class="t">Settings</span></a><a data-v="diagnostics"><span class="ic">⚑</span><span class="t">Diagnostics</span></a>
+<div class="sp"></div><div class="prof"><div class="av" id="avt">K</div><div class="t"><b id="pname">You</b><br><span id="pws" style="font-size:11px;color:var(--tx2)">My MindVault</span></div></div>
+</nav>
+<main>
+<section id="home">
+<div class="hero2"><div><p class="sub" style="margin:0 0 10px" id="greet">Welcome back</p>
+<h1 class="big">Your mind,<br><em>expanded.</em></h1><p class="sub">Capture, connect, and explore your knowledge with AI.</p>
+<div class="row"><button class="btn p" onclick="go('library');newNote()">✚ Capture Knowledge</button><button class="btn" onclick="go('companion')">✦ Ask AI</button></div>
+<div class="mets"><div><b id="m1">0</b><span>Knowledge entries</span></div><div><b id="m2">0</b><span>Indexed chunks</span></div><div><b id="m3">0</b><span>Connections discovered</span></div></div></div>
+<div class="orbw"><canvas id="orb" aria-label="Interactive map of your notes"></canvas><div class="otip" id="otip"></div><p id="orbhint" class="sub" style="position:absolute;left:0;right:0;bottom:10%;text-align:center;margin:0">Save a few notes and your universe appears here.</p></div></div>
+<div class="lower"><div><div class="row between"><span class="kick">Recent knowledge</span><a class="tag" onclick="go('library')">View all →</a></div><div class="eds" id="recent"></div></div>
+<aside class="disc"><span class="kick">✦ Discoveries</span><div id="disc"></div><span class="kick" style="display:block;margin-top:18px">Ask next</span><div id="dq" style="margin-top:8px"></div><span class="kick" style="display:block;margin-top:18px">Recent activity</span><div id="act"></div></aside></div>
+</section>
+<section id="library">
+<div id="lib"><div class="row between"><div><h2>Knowledge Library</h2><p class="sub">Your notes and documents, organized and searchable.</p></div>
+<div class="row"><button class="btn" onclick="$('#up').click()">⇪ Upload document</button><button class="btn p" onclick="newNote()">+ New Note</button></div></div>
+<input type="file" id="up" accept=".pdf,.txt,.md" hidden><input id="lq" placeholder="Filter notes…" aria-label="Filter notes"><br><br>
+<div id="tags" style="margin-bottom:14px"></div><div class="grid" id="notes"></div></div>
+<div id="note" style="display:none"><div class="row between"><a class="tag" onclick="closeNote()">← Back to Library</a><span id="nst" class="meta"></span></div>
+<div class="row" style="margin-top:12px"><input id="nti" placeholder="Title" aria-label="Title" style="flex:2;min-width:200px;font-family:Georgia,serif;font-size:20px"><input id="ntg" placeholder="Tags, comma separated" aria-label="Tags" style="flex:1;min-width:160px"></div>
+<textarea id="nbody" class="edit" placeholder="Write in Markdown…" aria-label="Markdown editor"></textarea><div id="nprev" class="md mdprev" style="display:none"></div>
+
+<div id="attachments" style="margin-top:22px">
+  <div class="row between">
+    <h3>Attachments</h3>
+    <span id="attcount" class="meta"></span>
+  </div>
+  <div id="attlist" class="grid" style="margin-top:10px"></div>
+  <div class="row" style="margin-top:12px">
+    <button class="btn" onclick="openAttachPicker()">+ Attach from Library</button>
+    <button class="btn" onclick="$('#attup').click()">↑ Upload and attach</button>
+  </div>
+  <div id="attachPicker" style="display:none;margin-top:12px">
+    <div class="row">
+      <select id="attachSelect" style="flex:1;min-width:180px"></select>
+      <button class="btn p" onclick="attachSelectedDocument()">Attach</button>
+      <button class="btn" onclick="$('#attachPicker').style.display='none'">Cancel</button>
+    </div>
+  </div>
+  <input type="file" id="attup" accept=".pdf,.txt,.md" hidden>
+</div>
+<div class="row" style="margin-top:12px"><button class="btn p" onclick="saveNote()">Save</button><button class="btn" id="pvb" onclick="togglePrev()">Preview</button><button class="btn" onclick="delNote()">Delete</button><span class="meta" id="ninfo"></span></div>
+<h3 style="margin-top:22px">Related notes</h3><div class="grid" id="rel" style="margin-top:8px"></div></div>
+</section>
+<section id="search"><h2>Semantic Search</h2><p class="sub">Find knowledge by meaning, not just keywords.</p>
+<input id="sq" placeholder="How can I make my database queries faster?" aria-label="Semantic search"><br><br><div id="sres"></div></section>
+<section id="companion" style="height:100%"><div class="bar between"><h2 class="row"><span class="ai-orb"></span>AI Companion</h2><div class="bar"><select id="convs" aria-label="Conversations" onchange="pickConv(this.value)"></select><button class="btn" onclick="newChat()">New chat</button><button class="btn" onclick="delChat()">Delete</button></div></div>
+<p class="sub">Ask questions about your own knowledge. Answers cite the notes they use.</p>
+<div class="chat" id="chat" aria-live="polite"></div><div class="sug" id="sug"></div>
+<div class="row"><input id="cq" placeholder="Ask anything about your knowledge…" style="flex:1" aria-label="Ask AI"><button class="btn p" onclick="send()">Send</button></div></section>
+<section id="universe"><div class="row between"><div><h2>Knowledge Universe</h2><p class="sub" id="uhint">&nbsp;</p></div>
+<div class="row"><input id="uq" placeholder="Find node…" style="width:140px" aria-label="Find node"><label class="sub" style="margin:0">Similarity <b id="thv">0.45</b></label><input type="range" id="th" min="0.2" max="0.9" step="0.05" value="0.45" style="width:120px" aria-label="Similarity threshold"><button class="btn" onclick="zoom(1.25)" aria-label="Zoom in">+</button><button class="btn" onclick="zoom(.8)" aria-label="Zoom out">−</button><button class="btn" onclick="fitU()">Reset</button></div></div>
+<div class="uwrap"><canvas id="uni"></canvas><div id="uinfo" class="glass"></div></div>
+<p class="meta">Drag to pan · scroll to zoom · click a node · double-click to open. Edges show embedding similarity between notes, which suggests but does not prove a relationship.</p></section>
+<section id="settings"><h2>Settings</h2><p class="sub">Personalize your workspace.</p>
+<div class="fld"><label for="sdn">Display name</label><div class="row"><input id="sdn" style="flex:1"><button class="btn" onclick="saveProfile()">Save</button></div></div>
+<div class="fld"><label>Email</label><input id="sem" disabled></div>
+<div class="fld"><label for="swn">Workspace name</label><input id="swn" onchange="savePrefs()"></div>
+<div class="set"><div><b>Default view</b><br><span class="sub">Where MindVault opens</span></div><select id="sdv" onchange="savePrefs()"><option value="home">Home</option><option value="library">Library</option><option value="search">Search</option><option value="companion">AI Companion</option><option value="universe">Universe</option></select></div>
+<div class="set"><div><b>Reduce motion</b><br><span class="sub">Calms the starfield, orbit and counters</span></div><button class="sw" id="srm" aria-label="Reduce motion"></button></div>
+<div class="set"><div><b>Processing notifications</b><br><span class="sub">Tell me when a note finishes indexing or fails</span></div><button class="sw" id="snp" aria-label="Processing notifications"></button></div>
+<h3 style="margin-top:22px">Change password</h3><div class="fld"><input id="pw1" type="password" placeholder="Current password" autocomplete="current-password" aria-label="Current password"><input id="pw2" type="password" placeholder="New password (min 8)" autocomplete="new-password" aria-label="New password"><div><button class="btn" onclick="changePw()">Update password</button></div></div>
+<div class="set"><div><b>Sign out</b></div><button class="btn" onclick="logout()">Sign out</button></div></section>
+<section id="diagnostics"><div class="row between"><div><h2>System Diagnostics</h2><p class="sub">Developer view. Live status of every service.</p></div><button class="btn" onclick="loadDiag()">Refresh</button></div><div class="grid" id="diag"></div><div id="derr"></div></section>
+</main></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<div id="cmd"><div class="box glass"><input id="cin" placeholder="Type a command or search…" aria-label="Command palette"><div id="clist" style="margin-top:8px"></div></div></div>
+<script>
+"use strict";
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const VIEWS=["home","library","search","companion","universe","settings","diagnostics"];
+let TOKEN=localStorage.getItem("mv_token"),ME=null,N=[],tagF="",cur=null,G={nodes:[],edges:[]},STATS=null,CID=null,busy=false,LASTQ="",ALL={},authMode="login";
+let RM=matchMedia("(prefers-reduced-motion:reduce)").matches;
+const ago=t=>{const m=(Date.now()-new Date(t))/6e4;return m<1?"just now":m<60?Math.round(m)+" min ago":m<1440?Math.round(m/60)+" hr ago":Math.round(m/1440)+" days ago"};
+async function api(path,o={}){const h={...(o.headers||{})};if(TOKEN)h.Authorization="Bearer "+TOKEN;if(o.json!==undefined){h["Content-Type"]="application/json";o={...o,body:JSON.stringify(o.json)}}
+let r;try{r=await fetch("/api"+path,{...o,headers:h})}catch{throw new Error("Can’t reach the MindVault server. Start it and open http://localhost:8000")}
+if(r.status==401&&TOKEN&&!path.startsWith("/auth/")){logout("Your session expired. Please sign in again.");throw new Error("Session expired")}
+if(!r.ok){let m=r.statusText;try{const j=await r.json();m=typeof j.detail=="string"?j.detail:(j.detail&&j.detail[0]&&j.detail[0].msg)||m}catch{}throw new Error(m)}
+return r.status==204?null:r.json()}
+function toast(m,bad){const t=$("#toast");t.textContent=m;t.className="on"+(bad?" bad":"");clearTimeout(toast.t);toast.t=setTimeout(()=>t.className="",3200)}
+const tagsHtml=a=>a.map(t=>`<span class="tag">${esc(t)}</span>`).join("");
+function stat(n){const s=n.processing_status;if(!s)return"";if(s=="pending"||s=="processing")return'<span class="st"><i></i>Indexing…</span>';
+if(s=="indexed")return'<span class="st ok2">✓ '+(n.chunk_count?"Indexed · "+n.chunk_count+(n.chunk_count==1?" chunk":" chunks"):"Saved · nothing to index")+'</span>';
+return`<span class="st bad" title="${esc(n.processing_error||"")}">Couldn’t index · <a onclick="event.stopPropagation();retry('${n.id}')">Retry</a></span>`}
+function md(src){const code=[];const t=esc(src).replace(/```[^\n]*\n?([\s\S]*?)```/g,(_,c)=>{code.push(c);return"\u0000"+(code.length-1)+"\u0000"});
+const inl=x=>x.replace(/`([^`]+)`/g,"<code>$1</code>").replace(/\*\*([^*]+)\*\*/g,"<b>$1</b>").replace(/(^|[^*])\*([^*\n]+)\*/g,"$1<i>$2</i>").replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,'<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+const out=[];let list=null;const close=()=>{if(list){out.push("</"+list+">");list=null}};
+for(const line of t.split("\n")){let m;
+if(m=line.match(/^(#{1,4})\s+(.*)/)){close();const l=m[1].length+1;out.push(`<h${l}>${inl(m[2])}</h${l}>`)}
+else if(m=line.match(/^\s*[-*]\s+(.*)/)){if(list!="ul"){close();out.push("<ul>");list="ul"}out.push("<li>"+inl(m[1])+"</li>")}
+else if(m=line.match(/^\s*\d+\.\s+(.*)/)){if(list!="ol"){close();out.push("<ol>");list="ol"}out.push("<li>"+inl(m[1])+"</li>")}
+else if(m=line.match(/^&gt;\s?(.*)/)){close();out.push("<blockquote>"+inl(m[1])+"</blockquote>")}
+else if(!line.trim()){close()}else{close();out.push("<p>"+inl(line)+"</p>")}}
+close();return out.join("").replace(/\u0000(\d+)\u0000/g,(_,i)=>"<pre><code>"+code[i]+"</code></pre>")}
+// ---------- auth ----------
+function showAuth(msg){$("#shell").style.display="none";$("#auth").style.display="grid";$("#aerr").textContent=msg||""}
+function setAuthMode(){authMode=authMode=="login"?"register":"login";const r=authMode=="register";$("#an").style.display=r?"":"none";$("#atitle").textContent=r?"Create your vault":"Welcome back";
+$("#asub").textContent=r?"Your first account also adopts any notes saved before accounts existed.":"Sign in to your knowledge universe.";$("#abtn").textContent=r?"Create account":"Sign in";$("#aswitch").textContent=r?"I already have an account":"Create an account";$("#aerr").textContent=""}
+async function authSubmit(){const email=$("#ae").value.trim(),password=$("#ap").value;$("#aerr").textContent="";
+try{const r=await api("/auth/"+authMode,{method:"POST",json:authMode=="register"?{email,password,display_name:$("#an").value}:{email,password}});TOKEN=r.access_token;localStorage.setItem("mv_token",TOKEN);ME=r.user;$("#ap").value="";boot()}catch(e){$("#aerr").textContent=e.message}}
+function logout(msg){TOKEN=null;ME=null;localStorage.removeItem("mv_token");N=[];ALL={};cur=null;CID=null;showAuth(typeof msg=="string"?msg:"")}
+function applyUser(){const p=ME.prefs||{};RM=p.reduce_motion??matchMedia("(prefers-reduced-motion:reduce)").matches;$("#pname").textContent=ME.display_name;$("#avt").textContent=(ME.display_name||"?")[0].toUpperCase();$("#pws").textContent=p.workspace||"My MindVault";$("#greet").textContent="Welcome back, "+ME.display_name}
+async function boot(){if(!TOKEN){showAuth();return}
+try{ME=ME||await api("/auth/me")}catch(e){if(TOKEN)showAuth(e.message);return}
+$("#auth").style.display="none";$("#shell").style.display="";applyUser();const h=location.hash.slice(1);go(VIEWS.includes(h)?h:(ME.prefs.default_view||"home"))}
+// ---------- navigation ----------
+function go(v){$$("section").forEach(s=>s.classList.toggle("on",s.id==v));$$("nav a").forEach(a=>a.classList.toggle("on",a.dataset.v==v));history.replaceState(null,"","#"+v);const f=LOAD[v];if(f)f().catch(e=>toast(e.message,1))}
+// ---------- home ----------
+function metric(id,to){const el=$("#"+id),from=+el.dataset.v||0;if(from==to){el.textContent=to;return}el.dataset.v=to;if(RM){el.textContent=to;return}const t0=performance.now();(function f(t){const p=Math.min(1,(t-t0)/700);el.textContent=Math.round(from+(to-from)*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f)})(t0)}
+async function loadHome(){const [s,g]=await Promise.all([api("/stats"),api("/graph?threshold=0.4")]);STATS=s;G=g;
+metric("m1",s.notes);metric("m2",s.chunks);metric("m3",s.connections);$("#orbhint").style.display=g.nodes.length?"none":"block";
+$("#recent").innerHTML=s.recent.length?s.recent.slice(0,3).map((n,i)=>{const L=i?90:170;return`<div class="ed e${i}" onclick="openNote('${n.id}')"><span class="kick">${esc(n.tags[0]||"Note")} · ${ago(n.updated_at)}</span><h3>${esc(n.title)}</h3><p>${esc(n.preview.slice(0,L))}${n.preview.length>L?"…":""}</p>${tagsHtml(n.tags)}</div>`}).join(""):`<div class="ed e0" onclick="go('library');newNote()"><span class="kick">Start here</span><h3>Capture your first note</h3><p>Everything you save is indexed so you can search it by meaning.</p></div>`;
+$("#disc").innerHTML=s.discoveries.length?s.discoveries.map(d=>`<div class="di" onclick="openNote('${d.a}')"><b>${esc(d.a_title)}</b> ↔ <b>${esc(d.b_title)}</b><br><span style="color:var(--tx2);font-size:12px">Similarity ${d.score.toFixed(2)}. Worth reading together.</span></div>`).join(""):'<p style="font-size:13px;color:var(--tx2)">Connections between your notes will appear here once they are indexed.</p>';
+const sug=s.suggestions.length?s.suggestions:["What have I saved recently?"];$("#dq").innerHTML=sug.map(q=>`<span class="tag" onclick="askAbout(this.textContent)">${esc(q)}</span>`).join("");
+$("#act").innerHTML=s.activity.length?s.activity.map(a=>`<div class="di" onclick="${a.type=="conversation"?"go('companion');pickConv('"+a.id+"')":"openNote('"+a.id+"')"}">${a.type=="conversation"?"✦ Asked: ":a.type=="note_created"?"＋ Saved ":"✎ Edited "}<b>${esc(a.title)}</b> <span style="color:var(--tx2);font-size:12px">${ago(a.at)}</span></div>`).join(""):'<p style="font-size:13px;color:var(--tx2)">Nothing yet.</p>';
+if(s.processing)watch()}
+// ---------- library ----------
+async function loadLibrary(){const q=$("#lq").value.trim();const [tags]=await Promise.all([api("/tags"),loadNotes()]);
+$("#tags").innerHTML=[{tag:"",count:""},...tags].map(t=>`<span class="tag ${t.tag==tagF?"on":""}" onclick="tagF=${JSON.stringify(t.tag).replace(/"/g,"&quot;")};loadLibrary()">${t.tag?esc(t.tag)+" "+t.count:"All"}</span>`).join("")}
+async function loadNotes(){const q=$("#lq").value.trim();N=await api("/notes?limit=200"+(q?"&q="+encodeURIComponent(q):"")+(tagF?"&tag="+encodeURIComponent(tagF):""));N.forEach(n=>ALL[n.id]=n.processing_status);
+$("#notes").innerHTML=N.length?N.map(n=>`<div class="card glass" onclick="openNote('${n.id}')"><h3>${n.source_type=="document"?"📄 ":""}${esc(n.title)}</h3><p>${esc(n.preview.slice(0,110))}${n.preview.length>110?"…":""}</p>${tagsHtml(n.tags)}<div class="meta">${ago(n.updated_at)} · ${stat(n)}</div></div>`).join(""):'<p class="sub">No notes yet. Create one or upload a document.</p>';
+if(N.some(n=>n.processing_status=="pending"||n.processing_status=="processing"))watch()}
+let lt;$("#lq").oninput=()=>{clearTimeout(lt);lt=setTimeout(()=>loadNotes().catch(e=>toast(e.message,1)),250)};
+let wt;function watch(){clearTimeout(wt);wt=setTimeout(async()=>{if(!TOKEN)return;let L;try{L=await api("/notes?limit=200")}catch{return}
+const notify=!ME||ME.prefs.notify_processing!==false;
+L.forEach(n=>{const p=ALL[n.id];if(notify&&p&&p!=n.processing_status){if(n.processing_status=="indexed")toast(`“${n.title}” is indexed`);if(n.processing_status=="failed")toast(`“${n.title}” couldn’t be indexed`,1)}});
+ALL=Object.fromEntries(L.map(n=>[n.id,n.processing_status]));const v=($("section.on")||{}).id;
+if(cur&&cur.id){const c=L.find(n=>n.id==cur.id);if(c){Object.assign(cur,{processing_status:c.processing_status,chunk_count:c.chunk_count,processing_error:c.processing_error});refreshEditor()}}
+if(v=="library"&&$("#lib").style.display!="none")loadNotes();if(v=="home")loadHome();
+if(L.some(n=>n.processing_status=="pending"||n.processing_status=="processing"))watch()},1500)}
+async function retry(id){try{await api("/notes/"+id+"/reprocess",{method:"POST"});toast("Retrying…");if(cur&&cur.id==id)cur.processing_status="pending",refreshEditor();ALL[id]="pending";watch()}catch(e){toast(e.message,1)}}
+$("#up").onchange=async e=>{const f=e.target.files[0];e.target.value="";if(!f)return;const fd=new FormData();fd.append("file",f);try{toast("Uploading…");const n=await api("/documents",{method:"POST",body:fd});toast("Uploaded. Extracting and indexing…");ALL[n.id]="pending";go("library");watch()}catch(err){toast(err.message,1)}};
+// ---------- editor ----------
+async function loadAttachments(){
+  const box=$("#attlist"),count=$("#attcount");
+
+  if(!cur||!cur.id){
+    count.textContent="";
+    box.innerHTML='<p class="sub">Save this note before attaching documents.</p>';
+    return;
+  }
+
+  const id=cur.id;
+
+  try{
+    const docs=await api(`/notes/${id}/attachments`);
+    if(!cur||cur.id!==id)return;
+
+    count.textContent=`${docs.length} attached`;
+
+    box.innerHTML=docs.length
+      ?docs.map(d=>`<div class="card glass" style="cursor:default">
+        <div class="row between">
+          <div>
+            <h3>📄 ${esc(d.title)}</h3>
+            <div class="meta">${d.chunk_count||0} chunks · ${esc(d.processing_status||"")}</div>
+          </div>
+          <button class="btn" onclick="detachDocument('${d.id}')">Detach</button>
+        </div>
+      </div>`).join("")
+      :'<p class="sub">No documents attached yet.</p>';
+
+  }catch(e){
+    box.innerHTML=`<p class="bad">${esc(e.message)}</p>`;
+  }
+}
+async function openAttachPicker(){
+  if(!cur||!cur.id){
+    toast("Save this note before attaching documents.",1);
+    return;
+  }
+
+  try{
+    const docs=(await api("/notes?limit=200"))
+      .filter(n=>n.source_type==="document");
+
+    const sel=$("#attachSelect");
+
+    sel.innerHTML=docs.map(d=>
+      `<option value="${d.id}">${esc(d.title)}</option>`
+    ).join("");
+
+    if(!docs.length){
+      toast("No Library documents found. Upload one first.",1);
+      return;
+    }
+
+    $("#attachPicker").style.display="block";
+
+  }catch(e){
+    toast(e.message,1);
+  }
+}
+async function attachSelectedDocument(){
+  if(!cur||!cur.id){
+    toast("Save this note first.",1);
+    return;
+  }
+
+  const document_id=$("#attachSelect").value;
+
+  if(!document_id){
+    toast("Choose a document first.",1);
+    return;
+  }
+
+  try{
+    await api(`/notes/${cur.id}/attachments`,{
+      method:"POST",
+      json:{document_id}
+    });
+
+    $("#attachPicker").style.display="none";
+    await loadAttachments();
+    toast("Document attached.");
+
+  }catch(e){
+    toast(e.message,1);
+  }
+}
+async function detachDocument(id){
+  if(!cur||!cur.id)return;
+
+  if(!confirm("Detach this document from the note? It will remain in your Library."))return;
+
+  try{
+    await api(`/notes/${cur.id}/attachments/${id}`,{
+      method:"DELETE"
+    });
+
+    await loadAttachments();
+    toast("Document detached.");
+
+  }catch(e){
+    toast(e.message,1);
+  }
+}
+$("#attup").onchange=async e=>{
+  const f=e.target.files[0];
+  e.target.value="";
+  if(!f)return;
+
+  if(!cur||!cur.id){
+    toast("Save this note before attaching a document.",1);
+    return;
+  }
+
+  const fd=new FormData();
+  fd.append("file",f);
+
+  try{
+    toast("Uploading document…");
+
+    const n=await api("/documents",{
+      method:"POST",
+      body:fd
+    });
+
+    await api(`/notes/${cur.id}/attachments`,{
+      method:"POST",
+      json:{document_id:n.id}
+    });
+
+    ALL[n.id]="pending";
+    watch();
+
+    await loadAttachments();
+    toast("Uploaded and attached. Indexing in the background.");
+
+  }catch(err){
+    toast(err.message,1)
+  }
+};
+function refreshEditor(){$("#nst").innerHTML=cur&&cur.id?stat(cur):"";$("#ninfo").textContent=cur&&cur.id?"Last saved "+ago(cur.updated_at):""}
+function showEditor(){$("#lib").style.display="none";$("#note").style.display="block";$("#nti").value=cur.title;$("#ntg").value=cur.tags.join(", ");$("#nbody").value=cur.content;setPrev(false);refreshEditor();$("#rel").innerHTML="";loadAttachments()}
+async function openNote(id){try{go("library");cur=await api("/notes/"+id);showEditor();loadRelated()}catch(e){toast(e.message,1)}}
+function newNote(){cur={id:null,title:"",tags:[],content:"",processing_status:null};showEditor();$("#nti").focus()}
+function closeNote(){cur=null;$("#note").style.display="none";$("#lib").style.display="block";loadLibrary().catch(e=>toast(e.message,1))}
+function setPrev(on){$("#nbody").style.display=on?"none":"";$("#nprev").style.display=on?"":"none";$("#pvb").textContent=on?"Edit":"Preview";if(on)$("#nprev").innerHTML=md($("#nbody").value)||'<p class="sub">Nothing to preview.</p>'}
+function togglePrev(){setPrev($("#nprev").style.display=="none")}
+async function saveNote(){if(!cur)return;const body={title:$("#nti").value.trim()||"Untitled",tags:$("#ntg").value.split(","),content:$("#nbody").value};
+try{toast("Saving…");const a=cur.id?await api("/notes/"+cur.id,{method:"PUT",json:body}):await api("/notes",{method:"POST",json:body});cur=a;$("#ntg").value=a.tags.join(", ");refreshEditor();loadAttachments();toast("Saved. Indexing in the background.");ALL[a.id]="pending";watch()}catch(e){toast(e.message,1)}}
+async function delNote(){if(!cur)return;if(cur.id){if(!confirm("Delete this note and its index? This can’t be undone."))return;try{await api("/notes/"+cur.id,{method:"DELETE"});toast("Note deleted")}catch(e){return toast(e.message,1)}}closeNote()}
+async function loadRelated(){if(!cur||!cur.id)return;const id=cur.id;try{const r=await api(`/notes/${id}/related?threshold=0.4`);if(!cur||cur.id!=id)return;$("#rel").innerHTML=r.length?r.map(n=>`<div class="card glass" onclick="openNote('${n.id}')"><h3>${esc(n.title)}</h3>${tagsHtml(n.tags)}<div class="meta">Similarity ${n.score.toFixed(2)}</div></div>`).join(""):'<p class="sub">Nothing related yet.</p>'}catch{}}
+addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key=="s"&&cur&&$("#note").style.display!="none"){e.preventDefault();saveNote()}});
+// ---------- search ----------
+let st,sid=0;$("#sq").oninput=e=>{clearTimeout(st);st=setTimeout(()=>runSearch(e.target.value.trim()),350)};
+const hl=(t,q)=>{let o=esc(t);(q.toLowerCase().match(/[\p{L}\p{N}]{3,}/gu)||[]).forEach(w=>{o=o.replace(new RegExp("("+w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"[\\p{L}\\p{N}]*)","giu"),"<mark>$1</mark>")});return o};
+async function runSearch(q){const box=$("#sres"),my=++sid;if(q.length<2){box.innerHTML="";return}box.innerHTML='<p class="sub" style="text-align:center">Searching…</p>';
+try{const r=await api("/search?q="+encodeURIComponent(q));if(my!=sid)return;
+box.innerHTML=r.results.length?`<p class="sub">Found ${r.results.length} relevant ${r.results.length==1?"result":"results"}</p>`+r.results.map(x=>`<div class="res glass" onclick="openNote('${x.note_id}')"><div class="row"><b>${x.source_type=="document"?"📄 ":""}${esc(x.title)}</b><span class="score" title="Cosine similarity, a ranking signal and not a probability">Similarity ${x.score.toFixed(2)}</span></div><p class="sub" style="margin:6px 0">${hl(x.excerpt.slice(0,260),q)}${x.excerpt.length>260?"…":""}</p>${tagsHtml(x.tags)}<a class="tag" onclick="event.stopPropagation();askAbout(${esc(JSON.stringify(q))})">Ask AI</a></div>`).join(""):'<p class="sub" style="text-align:center">Nothing similar enough. Try other words, or check that your notes finished indexing.</p>'}
+catch(e){if(my==sid)box.innerHTML=`<p class="bad" style="text-align:center">${esc(e.message)}</p>`}}
+// ---------- companion ----------
+const chatEl=$("#chat");
+function addMsg(c,h){const d=document.createElement("div");d.className="msg "+c;d.innerHTML=h;chatEl.appendChild(d);chatEl.scrollTop=1e9;return d}
+function sourcesHtml(src){return src.length?"<div>"+src.map(s=>`<span class="src" title="${esc(s.excerpt)}" onclick="openNote('${s.note_id}')">[${s.n}] ${esc(s.title)}</span>`).join("")+"</div>":""}
+function decorate(a,text,meta){a.querySelector(".body").className="body md";a.querySelector(".body").innerHTML=md(text);a.insertAdjacentHTML("beforeend",sourcesHtml(meta.sources)+'<a class="tag" style="margin-top:8px" onclick="copyMsg(this)">Copy</a>')}
+function copyMsg(el){navigator.clipboard.writeText(el.parentElement.querySelector(".body").innerText).then(()=>toast("Copied"),()=>toast("Couldn’t copy",1))}
+const label=g=>`<div class="meta">${g?"Answered from your notes":"No matching notes · general knowledge only"}</div>`;
+function greet(){chatEl.innerHTML="";addMsg("a","Ask me anything about your saved knowledge. I’ll cite the notes I use, and I’ll say so when I can’t find anything.")}
+async function loadConvs(){const L=await api("/conversations");$("#convs").innerHTML='<option value="">New conversation</option>'+L.map(c=>`<option value="${c.id}">${esc(c.title)}</option>`).join("");$("#convs").value=L.some(c=>c.id==CID)?CID:"";
+const sug=STATS&&STATS.suggestions.length?STATS.suggestions:["What have I saved recently?"];$("#sug").innerHTML=sug.map(q=>`<span class="tag" onclick="send(this.textContent)">${esc(q)}</span>`).join("");if(!chatEl.children.length)greet()}
+async function pickConv(id){if(!id)return newChat();try{go("companion");const c=await api("/conversations/"+id);CID=id;chatEl.innerHTML="";c.messages.forEach(m=>{if(m.role=="user")addMsg("u",esc(m.content));else{const a=addMsg("a",label(m.grounded)+'<div class="body"></div>');decorate(a,m.content,{sources:m.sources})}});$("#convs").value=id}catch(e){toast(e.message,1)}}
+function newChat(){CID=null;greet();$("#convs").value=""}
+async function delChat(){if(!CID)return;if(!confirm("Delete this conversation?"))return;try{await api("/conversations/"+CID,{method:"DELETE"});newChat();loadConvs()}catch(e){toast(e.message,1)}}
+function askAbout(q){go("companion");send(q)}
+async function send(text){text=(text||$("#cq").value).trim();if(!text||busy)return;LASTQ=text;$("#cq").value="";busy=true;addMsg("u",esc(text));
+const a=addMsg("a",'<span class="st"><i></i>Searching your notes…</span>');let acc="",meta=null;
+try{const r=await fetch("/api/chat/stream",{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+TOKEN},body:JSON.stringify({message:text,conversation_id:CID})});
+if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(typeof j.detail=="string"?j.detail:r.statusText)}
+const rd=r.body.getReader(),dec=new TextDecoder();let buf="";
+for(;;){const {value,done}=await rd.read();if(done)break;buf+=dec.decode(value,{stream:true});let i;
+while((i=buf.indexOf("\n\n"))>=0){const blk=buf.slice(0,i);buf=buf.slice(i+2);const ev=(blk.match(/^event: (.*)$/m)||[])[1],d=JSON.parse((blk.match(/^data: (.*)$/m)||[0,"{}"])[1]);
+if(ev=="meta"){meta=d;CID=d.conversation_id;a.innerHTML=label(d.grounded)+'<div class="body"></div>'}
+else if(ev=="token"){acc+=d.t;a.querySelector(".body").textContent=acc;chatEl.scrollTop=1e9}
+else if(ev=="error")throw new Error(d.message);
+else if(ev=="done")decorate(a,acc,meta)}}}
+catch(e){a.innerHTML=`<span class="bad">${esc(e.message)}</span> <a class="tag" onclick="this.closest('.msg').remove();send(LASTQ)">Retry</a>`}
+busy=false;loadConvs().catch(()=>{})}
+$("#cq").onkeydown=e=>{if(e.key=="Enter")send()};
+// ---------- universe (2D canvas, lightweight for integrated graphics) ----------
+const U=$("#uni"),ux=U.getContext("2d");let pos={},cam={x:0,y:0,k:1},sel=null,hov=null,drag=null,W=0,H=0,SC=1,dpr=1;
+function sizeU(){const r=U.getBoundingClientRect();dpr=Math.min(devicePixelRatio||1,2);W=U.width=Math.max(1,r.width*dpr);H=U.height=Math.max(1,r.height*dpr)}
+async function loadUniverse(){G=await api("/graph?threshold="+$("#th").value);sel=hov=null;$("#uinfo").style.display="none";layout();sizeU();draw();
+$("#uhint").textContent=!G.nodes.length?"No indexed notes yet. Save a note and it will appear here.":!G.edges.length?"No connections at this threshold. Try lowering it.":`${G.nodes.length} notes · ${G.edges.length} connections`}
+function layout(){const n=G.nodes,m=n.length;pos={};n.forEach((d,i)=>{const a=i*2.399,r=Math.sqrt((i+.5)/Math.max(m,1))*Math.sqrt(m)*55;pos[d.id]={x:Math.cos(a)*r,y:Math.sin(a)*r,vx:0,vy:0}});
+if(m>1)for(let it=0;it<220;it++){const cool=1-it/220;
+for(let i=0;i<m;i++)for(let j=i+1;j<m;j++){const a=pos[n[i].id],b=pos[n[j].id];let dx=a.x-b.x,dy=a.y-b.y,f=600/(dx*dx+dy*dy+.5);a.vx+=dx*f;a.vy+=dy*f;b.vx-=dx*f;b.vy-=dy*f}
+G.edges.forEach(e=>{const a=pos[e.source],b=pos[e.target];if(!a||!b)return;const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||1,f=(d-(130-e.score*80))*.02;a.vx+=dx/d*f;a.vy+=dy/d*f;b.vx-=dx/d*f;b.vy-=dy/d*f});
+n.forEach(d=>{const p=pos[d.id];p.vx-=p.x*.004;p.vy-=p.y*.004;p.vx=Math.max(-30,Math.min(30,p.vx));p.vy=Math.max(-30,Math.min(30,p.vy));p.x+=p.vx*cool;p.y+=p.vy*cool;p.vx*=.6;p.vy*=.6})}
+let R=1;n.forEach(d=>R=Math.max(R,Math.hypot(pos[d.id].x,pos[d.id].y)));SC=1/R;cam={x:0,y:0,k:1}}
+const scale=k=>Math.min(W,H)*.4*SC*(k??cam.k);
+const sp=d=>{const p=pos[d.id],s=scale();return{x:W/2+cam.x+p.x*s,y:H/2+cam.y+p.y*s}};
+const rad=d=>(7+Math.min(8,d.degree*1.5))*dpr;
+function draw(){if(!W)return;const q=$("#uq").value.trim().toLowerCase();ux.clearRect(0,0,W,H);const byId=Object.fromEntries(G.nodes.map(d=>[d.id,d]));
+G.edges.forEach(e=>{const a=byId[e.source],b=byId[e.target];if(!a||!b)return;const p=sp(a),o=sp(b),hi=sel&&(sel==a.id||sel==b.id);const g=ux.createLinearGradient(p.x,p.y,o.x,o.y);g.addColorStop(0,"#8B5CF6");g.addColorStop(1,"#22D3EE");ux.strokeStyle=g;ux.globalAlpha=sel?(hi?.95:.08):.15+e.score*.5;ux.lineWidth=(hi?2.5:1.2)*dpr;ux.beginPath();ux.moveTo(p.x,p.y);ux.lineTo(o.x,o.y);ux.stroke()});ux.globalAlpha=1;
+G.nodes.forEach(d=>{const p=sp(d),on=d.id==sel||d.id==hov,m=q&&d.title.toLowerCase().includes(q),r=rad(d)*(on?1.4:1);ux.shadowColor=on||m?"#22D3EE":"#8B5CF6";ux.shadowBlur=on||m?24:12;ux.fillStyle=on||m?"#22D3EE":"#8B5CF6";ux.beginPath();ux.arc(p.x,p.y,r,0,7);ux.fill();ux.shadowBlur=0;ux.fillStyle="#F4F5FF";ux.font=12*dpr+"px sans-serif";ux.textAlign="center";ux.fillText(d.title.length>24?d.title.slice(0,22)+"…":d.title,p.x,p.y+r+14*dpr)});
+if(!G.nodes.length){ux.fillStyle="#9AA7C2";ux.font=14*dpr+"px sans-serif";ux.textAlign="center";ux.fillText("Your universe is empty",W/2,H/2)}}
+const mp=e=>{const r=U.getBoundingClientRect();return{x:(e.clientX-r.left)*dpr,y:(e.clientY-r.top)*dpr}};
+const hit=m=>[...G.nodes].reverse().find(d=>{const p=sp(d);return Math.hypot(p.x-m.x,p.y-m.y)<rad(d)+6*dpr});
+function fly(tx,ty,tk){const s0={...cam};let f=0;(function step(){f++;const t=RM?1:1-Math.pow(1-f/24,3);cam.x=s0.x+(tx-s0.x)*t;cam.y=s0.y+(ty-s0.y)*t;cam.k=s0.k+(tk-s0.k)*t;draw();if(f<24&&!RM)requestAnimationFrame(step)})()}
+function focusNode(d){sel=d.id;const k=Math.max(cam.k,1.6),s=scale(k),p=pos[d.id];fly(-p.x*s,-p.y*s,k);
+const nb=G.edges.filter(e=>e.source==d.id||e.target==d.id).map(e=>({d:G.nodes.find(x=>x.id==(e.source==d.id?e.target:e.source)),s:e.score})).filter(x=>x.d).sort((a,b)=>b.s-a.s);
+const box=$("#uinfo");box.style.display="block";box.innerHTML=`<b>${esc(d.title)}</b><div style="margin:6px 0">${tagsHtml(d.tags)}</div><p class="sub" style="font-size:12px;margin:0 0 8px">${esc(d.preview)}</p><button class="btn p" onclick="openNote('${d.id}')">Open note</button><div style="margin-top:10px;font-size:12px;color:var(--tx2)">${nb.length?"Connected to:":"No connections at this threshold."}</div>${nb.map(x=>`<div class="di" onclick="focusNode(G.nodes.find(n=>n.id=='${x.d.id}'))">${esc(x.d.title)} <span style="color:var(--tx2)">${x.s.toFixed(2)}</span></div>`).join("")}`}
+function zoom(f){cam.k=Math.max(.4,Math.min(4,cam.k*f));cam.x*=f;cam.y*=f;draw()}
+function fitU(){sel=null;$("#uinfo").style.display="none";fly(0,0,1)}
+U.onmousedown=e=>{drag=mp(e);U.style.cursor="grabbing"};addEventListener("mouseup",()=>{drag=null;U.style.cursor="grab"});
+U.onmousemove=e=>{const m=mp(e);if(drag){cam.x+=m.x-drag.x;cam.y+=m.y-drag.y;drag=m}else{const h=hit(m);hov=h?h.id:null;U.title=h?h.title+" — "+h.preview.slice(0,100):""}draw()};
+U.onclick=e=>{const h=hit(mp(e));if(h)focusNode(h);else{sel=null;$("#uinfo").style.display="none";draw()}};U.ondblclick=e=>{const h=hit(mp(e));if(h)openNote(h.id)};
+U.onwheel=e=>{e.preventDefault();zoom(e.deltaY<0?1.1:.9)};
+let tt;$("#th").oninput=e=>{$("#thv").textContent=(+e.target.value).toFixed(2);clearTimeout(tt);tt=setTimeout(()=>loadUniverse().catch(x=>toast(x.message,1)),250)};
+$("#uq").oninput=()=>{const q=$("#uq").value.trim().toLowerCase(),d=q&&G.nodes.find(x=>x.title.toLowerCase().includes(q));if(d)focusNode(d);else draw()};
+addEventListener("resize",()=>{if($("#universe").classList.contains("on")){sizeU();draw()}});
+// ---------- settings ----------
+async function fillSettings(){const p=ME.prefs||{};$("#sdn").value=ME.display_name;$("#sem").value=ME.email;$("#swn").value=p.workspace||"My MindVault";$("#sdv").value=p.default_view||"home";$("#srm").classList.toggle("on",!!RM);$("#snp").classList.toggle("on",p.notify_processing!==false)}
+async function saveProfile(){try{ME=await api("/auth/me",{method:"PATCH",json:{display_name:$("#sdn").value}});applyUser();toast("Profile saved")}catch(e){toast(e.message,1)}}
+async function savePrefs(){const prefs={...ME.prefs,workspace:$("#swn").value.trim()||"My MindVault",reduce_motion:$("#srm").classList.contains("on"),notify_processing:$("#snp").classList.contains("on"),default_view:$("#sdv").value};try{ME=await api("/auth/me",{method:"PATCH",json:{prefs}});applyUser();toast("Preferences saved")}catch(e){toast(e.message,1)}}
+$$("#srm,#snp").forEach(b=>b.onclick=()=>{b.classList.toggle("on");savePrefs()});
+async function changePw(){try{await api("/auth/password",{method:"POST",json:{current_password:$("#pw1").value,new_password:$("#pw2").value}});$("#pw1").value=$("#pw2").value="";toast("Password updated")}catch(e){toast(e.message,1)}}
+// ---------- diagnostics ----------
+async function loadDiag(){const d=await api("/diagnostics"),c=s=>s=="ok"?"ok":s=="not_used"?"st":"bad";
+const card=(t,s,lines)=>`<div class="card glass" style="cursor:default"><div class="row between"><b>${t}</b><span class="${c(s)}">${esc(s)}</span></div><p>${lines.filter(Boolean).map(esc).join("<br>")}</p></div>`;
+$("#diag").innerHTML=card("API",d.api.status,["Uptime "+d.api.uptime_s+"s","Env: "+d.api.environment])+card("PostgreSQL",d.postgres.status,["Version "+d.postgres.version,d.postgres.latency_ms+" ms",d.postgres.detail])+card("pgvector",d.pgvector.status,["Version "+d.pgvector.version,"HNSW: "+((d.pgvector.indexes||[]).join(", ")||"none")])
++card("Ollama",d.ollama.status,[d.ollama.url,"Model "+d.ollama.model,d.ollama.detail])+card("Embedding model",d.embedding.loaded?"ok":"st",[d.embedding.model,d.embedding.dimensions+" dimensions",d.embedding.loaded?"Loaded":"Loads on first use"])+card("Redis",d.redis.status,[d.redis.detail])
++card("Processing","ok",Object.entries(d.processing.by_status).map(([k,v])=>k+": "+v));
+$("#derr").innerHTML=d.processing.errors.length?"<h3 style='margin:18px 0 8px'>Processing errors</h3>"+d.processing.errors.map(e=>`<div class="di"><b>${esc(e.title)}</b> <a class="tag" onclick="retry('${e.id}');setTimeout(loadDiag,1800)">Retry</a><br><span class="bad" style="font-size:12px">${esc(e.error||"")}</span></div>`).join(""):""}
+const LOAD={home:loadHome,library:loadLibrary,companion:loadConvs,universe:loadUniverse,settings:fillSettings,diagnostics:loadDiag,search:async()=>$("#sq").focus()};
+// ---------- ambience ----------
+const sc=$("#stars"),sx=sc.getContext("2d");let P=[];
+function sr(){sc.width=innerWidth;sc.height=innerHeight;P=Array.from({length:70},()=>({x:Math.random()*sc.width,y:Math.random()*sc.height,r:Math.random()*1.3+.2,s:Math.random()*.15+.03}))}
+sr();addEventListener("resize",sr);(function f(){sx.clearRect(0,0,sc.width,sc.height);P.forEach(p=>{if(!RM){p.y-=p.s;if(p.y<0)p.y=sc.height}sx.fillStyle="rgba(196,181,253,"+(.25+p.r/3)+")";sx.beginPath();sx.arc(p.x,p.y,p.r,0,7);sx.fill()});requestAnimationFrame(f)})();
+const OB=$("#orb"),ox=OB.getContext("2d");let ot=0,oh=null,OP=[];
+function orbDraw(){requestAnimationFrame(orbDraw);if(!$("#home").classList.contains("on"))return;
+const r=OB.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,1.5),w=Math.round(r.width*d),h=Math.round(r.height*d);if(OB.width!=w||OB.height!=h){OB.width=w;OB.height=h}
+if(!RM)ot+=.0025;const cx=w/2,cy=h/2,R=Math.min(w,h)/2*.92;ox.clearRect(0,0,w,h);
+let g=ox.createRadialGradient(cx,cy,0,cx,cy,R);g.addColorStop(0,"rgba(139,92,246,.35)");g.addColorStop(.5,"rgba(34,211,238,.07)");g.addColorStop(1,"rgba(0,0,0,0)");ox.fillStyle=g;ox.fillRect(0,0,w,h);
+for(let i=1;i<=3;i++){ox.strokeStyle="rgba(196,181,253,"+(.24-i*.05)+")";ox.lineWidth=d;ox.beginPath();ox.ellipse(cx,cy,R*i*.31,R*i*.31*.45,-.35,0,7);ox.stroke()}
+OP=G.nodes.slice(0,9).map((n,i)=>{const k=i%3+1,a=ot*(1.1-k*.25)*(i%2?-1:1)+i*2.1,rx=R*k*.31,ry=rx*.45,c=Math.cos(-.35),s=Math.sin(-.35),x=Math.cos(a)*rx,y=Math.sin(a)*ry;return{n,x:cx+x*c-y*s,y:cy+x*s+y*c,z:Math.sin(a)}});
+ox.lineWidth=d;G.edges.forEach(e=>{if(e.score<.4)return;const a=OP.find(p=>p.n.id==e.source),b=OP.find(p=>p.n.id==e.target);if(!a||!b)return;const hi=oh&&(oh==a.n.id||oh==b.n.id);ox.strokeStyle=hi?"rgba(34,211,238,.85)":"rgba(139,92,246,.3)";ox.beginPath();ox.moveTo(a.x,a.y);ox.lineTo(b.x,b.y);ox.stroke()});
+g=ox.createRadialGradient(cx-R*.05,cy-R*.06,2,cx,cy,R*.2);g.addColorStop(0,"#fff");g.addColorStop(.25,"#C4B5FD");g.addColorStop(.7,"#8B5CF6");g.addColorStop(1,"rgba(139,92,246,0)");ox.shadowColor="#8B5CF6";ox.shadowBlur=40;ox.fillStyle=g;ox.beginPath();ox.arc(cx,cy,R*.2,0,7);ox.fill();
+OP.forEach((p,i)=>{const on=p.n.id==oh;ox.shadowColor=on||i%2?"#22D3EE":"#8B5CF6";ox.shadowBlur=on?26:14;ox.fillStyle=on||i%2?"#22D3EE":"#C4B5FD";ox.beginPath();ox.arc(p.x,p.y,(on?9:5+p.z*1.5+1.5)*d,0,7);ox.fill()});ox.shadowBlur=0}
+OB.onmousemove=e=>{const r=OB.getBoundingClientRect(),d=OB.width/r.width,m={x:(e.clientX-r.left)*d,y:(e.clientY-r.top)*d};oh=null;OP.forEach(p=>{if(Math.hypot(p.x-m.x,p.y-m.y)<14*d)oh=p.n.id});const n=oh&&G.nodes.find(n=>n.id==oh),t=$("#otip");OB.style.cursor=n?"pointer":"default";t.style.display=n?"block":"none";if(n){t.textContent=n.title;t.style.left=m.x/d+14+"px";t.style.top=m.y/d-12+"px"}};
+OB.onmouseleave=()=>{oh=null;$("#otip").style.display="none"};OB.onclick=()=>{if(oh)openNote(oh)};orbDraw();
+// ---------- command palette ----------
+const CM=[["Create New Note",()=>{go("library");newNote()}],["Upload Document",()=>{go("library");$("#up").click()}],["Search Knowledge",()=>go("search")],["Ask AI Companion",()=>go("companion")],["Open Knowledge Universe",()=>go("universe")],["Go to Home",()=>go("home")],["Go to Settings",()=>go("settings")],["Open Diagnostics",()=>go("diagnostics")],["Sign out",()=>logout()]];
+function cl(){const q=$("#cin").value.toLowerCase();$("#clist").innerHTML="";CM.filter(c=>c[0].toLowerCase().includes(q)).forEach((c,i)=>{const a=document.createElement("a");a.textContent=c[0];if(!i)a.className="f";a.onclick=()=>{$("#cmd").classList.remove("on");c[1]()};$("#clist").appendChild(a)})}
+$("#cin").oninput=cl;$("#cin").onkeydown=e=>{if(e.key=="Enter"){const f=$("#clist .f");if(f)f.click()}};
+addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key=="k"&&TOKEN){e.preventDefault();$("#cmd").classList.toggle("on");$("#cin").value="";cl();$("#cin").focus()}if(e.key=="Escape")$("#cmd").classList.remove("on")});
+$("#cmd").onclick=e=>{if(e.target.id=="cmd")e.target.classList.remove("on")};
+$$("nav a").forEach(a=>a.onclick=()=>{go(a.dataset.v);if(a.dataset.v=="library"&&cur)closeNote()});
+$$("#ae,#ap,#an").forEach(i=>i.onkeydown=e=>{if(e.key=="Enter")authSubmit()});
+boot();
+</script></body></html>
