@@ -46,6 +46,7 @@ class Note(Base):
     tags: Mapped[list[str]] = mapped_column(ARRAY(String(50)), default=list, server_default=text("'{}'"))
     source_type: Mapped[str] = mapped_column(String(20), default="note", server_default="note")
     source_filename: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    source_url: Mapped[str | None] = mapped_column(String(2048), nullable=True)
     content_hash: Mapped[str] = mapped_column(String(64))
     indexed_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
     processing_status: Mapped[ProcessingStatus] = mapped_column(

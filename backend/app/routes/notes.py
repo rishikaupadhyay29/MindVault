@@ -14,6 +14,7 @@ from app.models import Note, NoteAttachment, ProcessingStatus, User
 from app.security import current_user
 from app.services.extract import ExtractionError, extract_pdf_text
 from app.services.graph import related_notes
+from app.services.web_extract import extract_webpage
 
 router = APIRouter(prefix="/api", tags=["notes"])
 MAX_CONTENT = 200_000
@@ -43,6 +44,11 @@ class NoteUpdate(BaseModel):
     content: str | None = Field(None, max_length=MAX_CONTENT)
     tags: list[str] | None = Field(None, max_length=50)
 
+class BookmarkIn(BaseModel):
+    url: str = Field(..., min_length=8, max_length=2048)
+    title: str | None = Field(None, max_length=300)
+    tags: list[str] = Field(default_factory=list, max_length=50)
+
 
 class NoteOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -52,6 +58,7 @@ class NoteOut(BaseModel):
     tags: list[str]
     source_type: str
     source_filename: str | None
+    source_url: str | None
     processing_status: ProcessingStatus
     processing_error: str | None
     chunk_count: int
@@ -66,6 +73,7 @@ class NoteSummary(BaseModel):
     tags: list[str]
     source_type: str
     source_filename: str | None
+    source_url: str | None
     processing_status: ProcessingStatus
     processing_error: str | None
     chunk_count: int
@@ -75,7 +83,8 @@ class NoteSummary(BaseModel):
 
 def _summary(n: Note) -> NoteSummary:
     return NoteSummary(id=n.id, title=n.title, preview=n.content[:200], tags=n.tags, source_type=n.source_type,
-                       source_filename=n.source_filename, processing_status=n.processing_status,
+                       source_filename=n.source_filename, source_url=n.source_url,
+                       processing_status=n.processing_status,
                        processing_error=n.processing_error, chunk_count=n.chunk_count,
                        created_at=n.created_at, updated_at=n.updated_at)
 
@@ -216,11 +225,61 @@ def upload_document(bg: BackgroundTasks, file: UploadFile = File(...), title: st
     bg.add_task(process_note, note.id)
     return note
 
+@router.post("/bookmarks", response_model=NoteOut, status_code=201)
+def create_bookmark(
+    body: BookmarkIn,
+    bg: BackgroundTasks,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+):
+    url = body.url.strip()
 
+    # Avoid saving the same bookmark twice.
+    existing = db.scalar(
+        select(Note).where(
+            Note.owner_id == user.id,
+            Note.source_type == "bookmark",
+            Note.source_url == url,
+        )
+    )
+    if existing:
+        raise HTTPException(409, "This bookmark is already in your Library.")
+
+    try:
+        page_title, page_content = extract_webpage(url)
+    except ValueError as e:
+        raise HTTPException(422, str(e))
+    except Exception as e:
+        import httpx
+
+        if isinstance(e, httpx.HTTPError):
+            raise HTTPException(502, "Could not retrieve this webpage.")
+        raise
+
+    content = page_content[:MAX_CONTENT]
+    title = (body.title or page_title or url)[:300].strip()
+
+    note = Note(
+        owner_id=user.id,
+        title=title or "Untitled bookmark",
+        content=content,
+        tags=clean_tags(["bookmark", *body.tags]),
+        source_type="bookmark",
+        source_url=url,
+        content_hash=_hash(content),
+        processing_status=ProcessingStatus.pending,
+        chunk_count=0,
+    )
+
+    db.add(note)
+    _commit(db)
+    db.refresh(note)
+
+    bg.add_task(process_note, note.id)
+    return note
 
 class AttachmentIn(BaseModel):
     document_id: uuid.UUID
-
 
 @router.get("/notes/{note_id}/attachments", response_model=list[NoteSummary])
 def list_attachments(
