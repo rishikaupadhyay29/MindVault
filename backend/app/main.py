@@ -9,7 +9,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app import jobs
 from app.config import settings
-from app.routes import auth, chat, graph, notes, search, stats
+from app.routes import auth, chat, collections, graph, notes, search, stats
 
 log = logging.getLogger("mindvault")
 FRONTEND = Path(__file__).resolve().parents[2] / "frontend"
@@ -31,8 +31,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="MindVault API", lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=settings.cors_origins.split(","), allow_methods=["*"],
                    allow_headers=["*"])
-for r in (auth, notes, search, graph, chat, stats):
-    app.include_router(r.router)
+for r in (auth, notes, search, graph, chat, stats, collections):    app.include_router(r.router)
 
 
 @app.get("/health")

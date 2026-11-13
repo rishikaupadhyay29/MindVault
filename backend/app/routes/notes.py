@@ -59,6 +59,7 @@ class NoteOut(BaseModel):
     source_type: str
     source_filename: str | None
     source_url: str | None
+    is_favorite: bool
     processing_status: ProcessingStatus
     processing_error: str | None
     chunk_count: int
@@ -74,6 +75,7 @@ class NoteSummary(BaseModel):
     source_type: str
     source_filename: str | None
     source_url: str | None
+    is_favorite: bool
     processing_status: ProcessingStatus
     processing_error: str | None
     chunk_count: int
@@ -82,12 +84,21 @@ class NoteSummary(BaseModel):
 
 
 def _summary(n: Note) -> NoteSummary:
-    return NoteSummary(id=n.id, title=n.title, preview=n.content[:200], tags=n.tags, source_type=n.source_type,
-                       source_filename=n.source_filename, source_url=n.source_url,
-                       processing_status=n.processing_status,
-                       processing_error=n.processing_error, chunk_count=n.chunk_count,
-                       created_at=n.created_at, updated_at=n.updated_at)
-
+    return NoteSummary(
+        id=n.id,
+        title=n.title,
+        preview=n.content[:200],
+        tags=n.tags,
+        source_type=n.source_type,
+        source_filename=n.source_filename,
+        source_url=n.source_url,
+        is_favorite=n.is_favorite,
+        processing_status=n.processing_status,
+        processing_error=n.processing_error,
+        chunk_count=n.chunk_count,
+        created_at=n.created_at,
+        updated_at=n.updated_at,
+    )
 
 def _get(db: Session, user: User, note_id: uuid.UUID) -> Note:
     note = db.get(Note, note_id)
@@ -167,7 +178,26 @@ def update_note(note_id: uuid.UUID, body: NoteUpdate, bg: BackgroundTasks,
     if reprocess:
         bg.add_task(process_note, note.id)
     return note
+class FavoriteUpdate(BaseModel):
+    is_favorite: bool
 
+
+@router.patch("/notes/{note_id}/favorite", response_model=NoteOut)
+def update_favorite(
+    note_id: uuid.UUID,
+    body: FavoriteUpdate,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+):
+    note = _get(db, user, note_id)
+
+    note.is_favorite = body.is_favorite
+    note.updated_at = func.now()
+
+    _commit(db)
+    db.refresh(note)
+
+    return note
 
 @router.post("/notes/{note_id}/reprocess", response_model=NoteOut)
 def reprocess_note(note_id: uuid.UUID, bg: BackgroundTasks, user: User = Depends(current_user), db: Session = Depends(get_db)):

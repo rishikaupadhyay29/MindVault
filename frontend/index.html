@@ -110,6 +110,253 @@ select{background:rgba(5,7,17,.6);color:var(--tx);border:1px solid var(--bd);bor
 .msg .body{white-space:pre-wrap}.msg .body.md{white-space:normal}.msg .meta{margin:0 0 6px}
 .fld{display:flex;flex-direction:column;gap:6px;margin:10px 0}.fld label{color:var(--tx2);font-size:12px}
 .mdprev{min-height:200px;margin-top:12px;padding:6px 4px}
+
+/* ================================
+   MINDVAULT COLLECTIONS REDESIGN
+================================ */
+
+#collectionsPanel {
+  margin: 30px 0 34px !important;
+  padding: 22px;
+  border: 1px solid rgba(167, 139, 250, .20);
+  border-radius: 22px;
+  background:
+    radial-gradient(ellipse at 0% 0%, rgba(139,92,246,.13), transparent 55%),
+    linear-gradient(145deg, rgba(25,22,53,.52), rgba(10,15,30,.40));
+  backdrop-filter: blur(16px);
+  box-shadow: 0 12px 40px rgba(0,0,0,.16);
+}
+
+#collectionsPanel h3 {
+  font-family: Georgia, serif;
+  font-weight: 500;
+  letter-spacing: .2px;
+}
+
+#collectionsPanel #collectionsList {
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+#collectionsPanel #collectionsList > .card {
+  position: relative;
+  min-height: 175px;
+  padding: 20px;
+  border: 1px solid rgba(167,139,250,.22);
+  border-radius: 19px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(139,92,246,.20), transparent 55%),
+    linear-gradient(145deg, rgba(38,31,72,.72), rgba(14,21,39,.78));
+  backdrop-filter: blur(18px);
+  box-shadow: 0 8px 28px rgba(0,0,0,.13);
+  transition: transform .25s, border-color .25s, box-shadow .25s;
+}
+
+#collectionsPanel #collectionsList > .card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(167,139,250,.65);
+  box-shadow: 0 16px 40px rgba(124,58,237,.20);
+}
+
+#collectionsPanel #collectionsList > .card h3 {
+  font-size: 21px;
+  margin: 16px 0 5px !important;
+}
+
+#collectionsPanel #collectionsList > .card .meta {
+  font-size: 12px;
+}
+
+#collectionsPanel #collectionsList > .card .btn {
+  padding: 7px 12px;
+  font-size: 12px;
+  border-radius: 9px;
+  background: rgba(255,255,255,.045);
+}
+
+#collectionsPanel #collectionsList > .card .btn:hover {
+  background: rgba(139,92,246,.20);
+}
+
+#collectionsPanel #collectionItems {
+  padding-top: 18px;
+  border-top: 1px solid rgba(167,139,250,.18);
+}
+
+#collectionsPanel #collectionItemsList {
+  margin-top: 18px;
+  gap: 14px;
+}
+
+#collectionsPanel #collectionItemsList > .card {
+  border: 1px solid rgba(167,139,250,.20);
+  border-radius: 16px;
+  background: rgba(22,28,49,.65);
+  padding: 17px;
+}
+
+#collectionsPanel #collectionItemsList > .card:hover {
+  border-color: rgba(167,139,250,.55);
+}
+
+#collectionsPanel select {
+  min-height: 44px;
+  border: 1px solid rgba(167,139,250,.28);
+  border-radius: 11px;
+  background: rgba(9,12,27,.85);
+  color: var(--tx);
+  padding: 10px 13px;
+}
+
+@media(max-width:600px) {
+  #collectionsPanel {
+    padding: 15px;
+  }
+
+  #collectionsPanel #collectionsList {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Premium collection cards */
+
+#collectionsPanel #collectionsList {
+  grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
+  gap: 18px;
+}
+
+#collectionsPanel .collection-card {
+  position: relative;
+  min-height: 205px;
+  padding: 20px;
+  overflow: visible;
+  cursor: pointer;
+  border: 1px solid rgba(167,139,250,.22);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 90% 5%, rgba(139,92,246,.23), transparent 48%),
+    linear-gradient(145deg, rgba(35,29,68,.78), rgba(13,19,37,.82));
+  backdrop-filter: blur(18px);
+  transition: .25s ease;
+}
+
+#collectionsPanel .collection-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(167,139,250,.65);
+  box-shadow: 0 15px 40px rgba(100,65,220,.22);
+}
+
+.collection-card-top,
+.collection-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.collection-icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  font-size: 25px;
+  background: rgba(139,92,246,.17);
+  border: 1px solid rgba(167,139,250,.22);
+}
+
+.collection-card-info h3 {
+  font-family: Georgia, serif;
+  font-size: 22px;
+  font-weight: 500;
+  margin: 18px 0 4px;
+}
+
+.collection-card-info p {
+  color: var(--tx2);
+  font-size: 12px;
+  margin: 0;
+}
+
+.collection-card-footer {
+  margin-top: 19px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(167,139,250,.14);
+  color: var(--lav);
+  font-size: 12px;
+}
+
+.collection-menu {
+  position: relative;
+}
+
+.collection-menu summary {
+  list-style: none;
+  cursor: pointer;
+  color: var(--tx2);
+  padding: 7px 10px;
+  border-radius: 9px;
+  letter-spacing: 2px;
+}
+
+.collection-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.collection-menu summary:hover {
+  background: rgba(255,255,255,.08);
+  color: white;
+}
+
+.collection-menu-items {
+  position: absolute;
+  z-index: 10;
+  right: 0;
+  top: 35px;
+  width: 135px;
+  padding: 6px;
+  border: 1px solid var(--bd);
+  border-radius: 12px;
+  background: rgba(15,18,38,.97);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 12px 30px rgba(0,0,0,.3);
+}
+
+.collection-menu-items button {
+  display: block;
+  width: 100%;
+  padding: 9px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--tx);
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+}
+
+.collection-menu-items button:hover {
+  background: rgba(139,92,246,.18);
+}
+
+.collection-menu-items button.danger {
+  color: #fca5a5;
+}
+
+.collection-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 35px 20px;
+  border: 1px dashed rgba(167,139,250,.3);
+  border-radius: 18px;
+  background: rgba(139,92,246,.06);
+}
+
+.collection-empty h3 {
+  margin: 0;
+}
+
 </style></head>
 <body>
 <div class="neb n1" aria-hidden="true"></div><div class="neb n2" aria-hidden="true"></div><canvas id="stars" aria-hidden="true"></canvas>
@@ -178,7 +425,65 @@ select{background:rgba(5,7,17,.6);color:var(--tx);border:1px solid var(--bd);bor
   </div>
 </div>
 
-<input type="file" id="up" accept=".pdf,.txt,.md" hidden><input id="lq" placeholder="Filter notes…" aria-label="Filter notes"><br><br>
+
+<input type="file" id="up" accept=".pdf,.txt,.md" hidden>
+
+<input id="lq"
+       placeholder="Search notes, documents, bookmarks..."
+       aria-label="Search your Library">
+
+<!-- Collections -->
+<div id="collectionsPanel" style="margin:20px 0">
+  <div class="row between" style="margin-bottom:12px">
+    <div>
+      <h3 style="margin:0">📁 Collections</h3>
+      <div class="meta">Organize your knowledge your way</div>
+    </div>
+    <button class="btn p" onclick="createCollection()">
+      + New Collection
+    </button>
+  </div>
+
+  <div id="collectionsList" class="grid"></div>
+
+  <div id="collectionItems" style="display:none;margin-top:18px">
+    <div class="row between">
+      <div>
+        <h3 id="collectionTitle" style="margin:0"></h3>
+        <div class="meta" id="collectionSubtitle"></div>
+      </div>
+      <button class="btn" onclick="closeCollection()">← Back</button>
+    </div>
+
+    <div class="row" style="margin:12px 0">
+      <select id="collectionAddNote" style="flex:1;min-width:180px">
+        <option value="">Choose an item from Library</option>
+      </select>
+      <button class="btn p" onclick="addToCollection()">+ Add Item</button>
+    </div>
+
+    <div id="collectionItemsList" class="grid"></div>
+  </div>
+</div>
+
+
+<div class="row" id="libraryFilters" style="margin:14px 0;flex-wrap:wrap">
+  <button class="btn p" onclick="setLibraryType('all')">All Items</button>
+  <button class="btn" onclick="setLibraryType('note')">Notes</button>
+  <button class="btn" onclick="setLibraryType('document')">Documents</button>
+  <button class="btn" onclick="setLibraryType('bookmark')">Bookmarks</button>
+<button class="btn" onclick="setLibraryType('favorite')">⭐ Favorites</button>
+</div>
+
+<div class="row between" style="margin-bottom:14px">
+  <div id="libraryCount" class="meta"></div>
+  <select id="librarySort" aria-label="Sort Library" onchange="loadNotes()">
+    <option value="newest">Newest first</option>
+    <option value="oldest">Oldest first</option>
+    <option value="az">Alphabetical</option>
+  </select>
+</div>
+
 <div id="tags" style="margin-bottom:14px"></div><div class="grid" id="notes"></div></div>
 <div id="note" style="display:none"><div class="row between"><a class="tag" onclick="closeNote()">← Back to Library</a><span id="nst" class="meta"></span></div>
 <div class="row" style="margin-top:12px"><input id="nti" placeholder="Title" aria-label="Title" style="flex:2;min-width:200px;font-family:Georgia,serif;font-size:20px"><input id="ntg" placeholder="Tags, comma separated" aria-label="Tags" style="flex:1;min-width:160px"></div>
@@ -280,9 +585,25 @@ const sug=s.suggestions.length?s.suggestions:["What have I saved recently?"];$("
 $("#act").innerHTML=s.activity.length?s.activity.map(a=>`<div class="di" onclick="${a.type=="conversation"?"go('companion');pickConv('"+a.id+"')":"openNote('"+a.id+"')"}">${a.type=="conversation"?"✦ Asked: ":a.type=="note_created"?"＋ Saved ":"✎ Edited "}<b>${esc(a.title)}</b> <span style="color:var(--tx2);font-size:12px">${ago(a.at)}</span></div>`).join(""):'<p style="font-size:13px;color:var(--tx2)">Nothing yet.</p>';
 if(s.processing)watch()}
 // ---------- library ----------
-async function loadLibrary(){const q=$("#lq").value.trim();const [tags]=await Promise.all([api("/tags"),loadNotes()]);
-$("#tags").innerHTML=[{tag:"",count:""},...tags].map(t=>`<span class="tag ${t.tag==tagF?"on":""}" onclick="tagF=${JSON.stringify(t.tag).replace(/"/g,"&quot;")};loadLibrary()">${t.tag?esc(t.tag)+" "+t.count:"All"}</span>`).join("")}
+async function loadLibrary(){
+  const q = $("#lq").value.trim();
 
+  const [tags] = await Promise.all([
+    api("/tags"),
+    loadNotes(),
+    loadCollections()
+  ]);
+
+  $("#tags").innerHTML = [
+    {tag:"",count:""},
+    ...tags
+  ].map(t => `
+    <span class="tag ${t.tag==tagF?"on":""}"
+      onclick="tagF=${JSON.stringify(t.tag).replace(/"/g,"&quot;")};loadLibrary()">
+      ${t.tag ? esc(t.tag)+" "+t.count : "All"}
+    </span>
+  `).join("");
+}
 function openBookmarkForm() {
   $("#bookmarkForm").style.display = "block";
   $("#bookmarkStatus").textContent = "";
@@ -338,9 +659,394 @@ async function saveBookmark() {
 }
 
 
-async function loadNotes(){const q=$("#lq").value.trim();N=await api("/notes?limit=200"+(q?"&q="+encodeURIComponent(q):"")+(tagF?"&tag="+encodeURIComponent(tagF):""));N.forEach(n=>ALL[n.id]=n.processing_status);
-$("#notes").innerHTML=N.length?N.map(n=>`<div class="card glass" onclick="openNote('${n.id}')"><h3>${n.source_type=="document"?"📄 ":""}${esc(n.title)}</h3><p>${esc(n.preview.slice(0,110))}${n.preview.length>110?"…":""}</p>${tagsHtml(n.tags)}<div class="meta">${ago(n.updated_at)} · ${stat(n)}</div></div>`).join(""):'<p class="sub">No notes yet. Create one or upload a document.</p>';
-if(N.some(n=>n.processing_status=="pending"||n.processing_status=="processing"))watch()}
+let collections = [];
+let activeCollectionId = null;
+
+async function loadCollections() {
+  try {
+    collections = await api("/collections");
+    renderCollections();
+  } catch (e) {
+    toast(e.message, 1);
+  }
+}
+
+
+function renderCollections() {
+  const container = $("#collectionsList");
+
+  if (!collections.length) {
+    container.innerHTML = `
+      <div class="collection-empty">
+        <div style="font-size:38px;margin-bottom:12px">✦</div>
+        <h3>Your space is waiting</h3>
+        <p class="meta">Create your first collection to organize your knowledge.</p>
+        <button class="btn p" onclick="createCollection()">
+          + Create Collection
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = collections.map((c, index) => `
+    <div class="collection-card"
+         onclick="openCollection('${c.id}')">
+
+      <div class="collection-card-top">
+        <div class="collection-icon">
+          ${["📚", "💡", "🚀", "🎓", "🌙"][index % 5]}
+        </div>
+
+        <details class="collection-menu"
+                 onclick="event.stopPropagation()">
+          <summary title="Collection options">•••</summary>
+          <div class="collection-menu-items">
+            <button onclick="event.stopPropagation();renameCollection('${c.id}')">
+              ✎ Rename
+            </button>
+            <button class="danger"
+              onclick="event.stopPropagation();deleteCollection('${c.id}')">
+              ♲ Delete
+            </button>
+          </div>
+        </details>
+      </div>
+
+      <div class="collection-card-info">
+        <h3>${esc(c.name)}</h3>
+        <p>${c.item_count} ${c.item_count === 1 ? "item" : "items"}</p>
+      </div>
+
+      <div class="collection-card-footer">
+        <span>Open collection</span>
+        <span>↗</span>
+      </div>
+
+    </div>
+  `).join("");
+}
+
+async function createCollection() {
+  const name = prompt("Enter collection name:");
+  if (name === null) return;
+
+  if (!name.trim()) {
+    toast("Collection name cannot be empty", 1);
+    return;
+  }
+
+  try {
+    await api("/collections", {
+      method: "POST",
+      json: { name: name.trim() }
+    });
+
+    toast("Collection created!");
+    await loadCollections();
+  } catch (e) {
+    toast(e.message, 1);
+  }
+}
+
+async function renameCollection(id) {
+  const collection = collections.find(c => c.id === id);
+  if (!collection) return;
+
+  const name = prompt("Enter new collection name:", collection.name);
+  if (name === null) return;
+
+  if (!name.trim()) {
+    toast("Collection name cannot be empty", 1);
+    return;
+  }
+
+  try {
+    await api(`/collections/${id}`, {
+      method: "PATCH",
+      json: { name: name.trim() }
+    });
+
+    toast("Collection renamed!");
+    await loadCollections();
+
+    if (activeCollectionId === id) {
+      $("#collectionTitle").textContent = name.trim();
+    }
+  } catch (e) {
+    toast(e.message, 1);
+  }
+}
+
+async function deleteCollection(id) {
+  const collection = collections.find(c => c.id === id);
+  if (!collection) return;
+
+  if (!confirm(`Delete "${collection.name}"? Its items will remain in your Library.`)) {
+    return;
+  }
+
+  try {
+    await api(`/collections/${id}`, {
+      method: "DELETE"
+    });
+
+    if (activeCollectionId === id) closeCollection();
+
+    toast("Collection deleted");
+    await loadCollections();
+  } catch (e) {
+    toast(e.message, 1);
+  }
+}
+
+async function openCollection(id) {
+  const collection = collections.find(c => c.id === id);
+  if (!collection) return;
+
+  activeCollectionId = id;
+
+  $("#collectionsList").style.display = "none";
+  $("#collectionItems").style.display = "block";
+  $("#collectionTitle").textContent = collection.name;
+  $("#collectionSubtitle").textContent = `${collection.item_count} items`;
+
+  await loadCollectionItems();
+}
+
+function closeCollection() {
+  activeCollectionId = null;
+  $("#collectionsList").style.display = "grid";
+  $("#collectionItems").style.display = "none";
+  loadCollections();
+}
+
+async function loadCollectionItems() {
+  if (!activeCollectionId) return;
+
+  try {
+    const items = await api(`/collections/${activeCollectionId}/items`);
+
+    $("#collectionSubtitle").textContent =
+      `${items.length} ${items.length === 1 ? "item" : "items"}`;
+
+    $("#collectionItemsList").innerHTML = items.length
+      ? items.map(n => `
+          <div class="card">
+            <div class="meta">${n.source_type || "note"}</div>
+            <h3 style="margin:8px 0">${esc(n.title)}</h3>
+            <div class="row between">
+              <span class="meta">${n.is_favorite ? "⭐ Favorite" : ""}</span>
+              <div class="row">
+                <button class="btn"
+                  onclick="openNote('${n.id}')">Open</button>
+                <button class="btn"
+                  onclick="removeFromCollection('${n.id}')">Remove</button>
+              </div>
+            </div>
+          </div>
+        `).join("")
+      : `<div class="meta">This collection is empty. Add an item from your Library.</div>`;
+
+    const select = $("#collectionAddNote");
+    const currentValue = select.value;
+
+    select.innerHTML = `
+      <option value="">Choose an item from Library</option>
+      ${N.map(n => `
+        <option value="${n.id}">${esc(n.title)}</option>
+      `).join("")}
+    `;
+
+    if (N.some(n => n.id === currentValue)) {
+      select.value = currentValue;
+    }
+  } catch (e) {
+    toast(e.message, 1);
+  }
+}
+
+async function addToCollection() {
+  if (!activeCollectionId) return;
+
+  const noteId = $("#collectionAddNote").value;
+  if (!noteId) {
+    toast("Please select an item first", 1);
+    return;
+  }
+
+  try {
+    await api(`/collections/${activeCollectionId}/items`, {
+      method: "POST",
+      json: { note_id: noteId }
+    });
+
+    toast("Item added to collection!");
+    await loadCollectionItems();
+    await loadCollections();
+  } catch (e) {
+    toast(e.message, 1);
+  }
+}
+
+async function removeFromCollection(noteId) {
+  if (!activeCollectionId) return;
+
+  if (!confirm("Remove this item from the collection?")) return;
+
+  try {
+    await api(`/collections/${activeCollectionId}/items/${noteId}`, {
+      method: "DELETE"
+    });
+
+    toast("Item removed");
+    await loadCollectionItems();
+    await loadCollections();
+  } catch (e) {
+    toast(e.message, 1);
+  }
+}
+
+
+let libraryType = "all";
+
+function setLibraryType(type) {
+  libraryType = type;
+
+  document.querySelectorAll("#libraryFilters button")
+    .forEach(btn => {
+      const active = btn.getAttribute("onclick") ===
+        `setLibraryType('${type}')`;
+
+      btn.classList.toggle("p", active);
+    });
+
+  loadNotes().catch(e => toast(e.message, 1));
+}
+
+async function loadNotes() {
+  const q = $("#lq").value.trim();
+
+  N = await api(
+    "/notes?limit=200" +
+    (q ? "&q=" + encodeURIComponent(q) : "") +
+    (tagF ? "&tag=" + encodeURIComponent(tagF) : "")
+  );
+
+  N.forEach(n => ALL[n.id] = n.processing_status);
+
+  let items = [...N];
+
+// Filter by content type or favorites
+if (libraryType === "favorite") {
+  items = items.filter(n => n.is_favorite === true);
+} else if (libraryType !== "all") {
+  items = items.filter(n =>
+    (n.source_type || "note") === libraryType
+  );
+}
+
+  // Sort items
+  const sort = $("#librarySort")?.value || "newest";
+
+  items.sort((a, b) => {
+    if (sort === "az") {
+      return a.title.localeCompare(b.title);
+    }
+
+    const dateA = new Date(a.updated_at).getTime();
+    const dateB = new Date(b.updated_at).getTime();
+
+    return sort === "oldest"
+      ? dateA - dateB
+      : dateB - dateA;
+  });
+
+  // Update count
+  $("#libraryCount").textContent =
+    `${items.length} ${items.length === 1 ? "item" : "items"}`;
+
+  // Render cards
+  $("#notes").innerHTML = items.length
+    ? items.map(n => {
+        const type = n.source_type || "note";
+
+        const icon = type === "document"
+          ? "📄 "
+          : type === "bookmark"
+            ? "🔖 "
+            : "";
+
+        const description = n.preview || "";
+
+       return `
+  <div class="card glass"
+       onclick="openNote('${n.id}')"
+       style="position:relative">
+
+    <button
+      class="btn"
+      onclick="event.stopPropagation(); toggleFavorite('${n.id}')"
+      title="${n.is_favorite ? 'Remove from Favorites' : 'Add to Favorites'}"
+      style="position:absolute;top:12px;right:12px;padding:5px 10px">
+      ${n.is_favorite ? '⭐' : '☆'}
+    </button>
+
+    <h3>${icon}${esc(n.title)}</h3>
+
+            <p>
+              ${esc(description.slice(0, 110))}
+              ${description.length > 110 ? "…" : ""}
+            </p>
+
+            ${tagsHtml(n.tags || [])}
+
+            <div class="meta">
+              ${ago(n.updated_at)} · ${stat(n)}
+            </div>
+
+          </div>
+        `;
+      }).join("")
+    : '<p class="sub">No matching items found.</p>';
+
+  if (N.some(n =>
+    n.processing_status === "pending" ||
+    n.processing_status === "processing"
+  )) {
+    watch();
+  }
+}
+async function toggleFavorite(id) {
+  const note = N.find(n => n.id === id);
+
+  if (!note) return;
+
+  const nextStatus = !note.is_favorite;
+
+  try {
+    await api(`/notes/${id}/favorite`, {
+      method: "PATCH",
+      json: {
+        is_favorite: nextStatus
+      }
+    });
+
+    note.is_favorite = nextStatus;
+
+    toast(
+      nextStatus
+        ? "Added to Favorites ⭐"
+        : "Removed from Favorites"
+    );
+
+    await loadNotes();
+
+  } catch (e) {
+    toast(e.message, 1);
+  }
+}
+
 let lt;$("#lq").oninput=()=>{clearTimeout(lt);lt=setTimeout(()=>loadNotes().catch(e=>toast(e.message,1)),250)};
 let wt;function watch(){clearTimeout(wt);wt=setTimeout(async()=>{if(!TOKEN)return;let L;try{L=await api("/notes?limit=200")}catch{return}
 const notify=!ME||ME.prefs.notify_processing!==false;

@@ -47,6 +47,9 @@ class Note(Base):
     source_type: Mapped[str] = mapped_column(String(20), default="note", server_default="note")
     source_filename: Mapped[str | None] = mapped_column(String(255), nullable=True)
     source_url: Mapped[str | None] = mapped_column(String(2048), nullable=True)
+    is_favorite: Mapped[bool] = mapped_column(
+    Boolean, default=False, server_default=text("false"), nullable=False
+)
     content_hash: Mapped[str] = mapped_column(String(64))
     indexed_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
     processing_status: Mapped[ProcessingStatus] = mapped_column(
@@ -107,4 +110,36 @@ class NoteAttachment(Base):
         primary_key=True,
     )
 
+    created_at: Mapped[datetime] = _ts()
+
+class Collection(Base):
+    __tablename__ = "collections"
+    __table_args__ = (
+        UniqueConstraint("owner_id", "name", name="uq_collections_owner_name"),
+    )
+
+    id: Mapped[uuid.UUID] = _id()
+    owner_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    created_at: Mapped[datetime] = _ts()
+
+
+class CollectionItem(Base):
+    __tablename__ = "collection_items"
+
+    collection_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("collections.id", ondelete="CASCADE"),
+        primary_key=True,
+    )
+    note_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("notes.id", ondelete="CASCADE"),
+        primary_key=True,
+    )
     created_at: Mapped[datetime] = _ts()

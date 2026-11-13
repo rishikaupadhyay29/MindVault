@@ -16,8 +16,19 @@ It transforms scattered notes, documents, and web bookmarks into an intelligent,
 
 - Create, edit, and organize personal notes.
 - Maintain a centralized Knowledge Library.
-- Add tags to organize information.
+- Organize information using tags.
 - Attach existing Library documents to notes.
+- Filter and sort notes, documents, and bookmarks.
+- Mark important items as Favorites.
+
+### 📁 Collections
+
+- Create personalized collections to organize knowledge.
+- Add notes, documents, and bookmarks to collections.
+- Add the same Library item to multiple collections.
+- Rename and delete collections.
+- Remove items from collections without deleting them from the Library.
+- View collection contents and item counts.
 
 ### 📄 Document Intelligence
 
@@ -31,8 +42,8 @@ It transforms scattered notes, documents, and web bookmarks into an intelligent,
 - Save website URLs directly to your Knowledge Library.
 - Automatically extract webpage titles and readable content.
 - Add custom titles and tags.
-- Store original webpage URLs.
-- Index bookmarked webpage content for semantic retrieval.
+- Preserve original webpage URLs.
+- Index bookmarked content for semantic retrieval.
 
 ### 🔍 Semantic Search
 
@@ -45,17 +56,12 @@ It transforms scattered notes, documents, and web bookmarks into an intelligent,
 - Ask questions about your personal knowledge base.
 - Retrieve relevant context from saved information.
 - Generate context-aware responses using RAG.
+- Use local AI inference through Ollama.
 
 ### 🌌 Knowledge Universe
 
 - Explore relationships between notes through an interactive 2D knowledge graph.
 - Discover potentially connected ideas using embedding similarity.
-
-### 🔐 Additional Features
-
-- Account-based authentication.
-- Background document and bookmark indexing.
-- System diagnostics and processing-status monitoring.
 
 ---
 
@@ -71,14 +77,14 @@ It transforms scattered notes, documents, and web bookmarks into an intelligent,
 | Embeddings     | Sentence Transformers, MiniLM |
 | AI Inference   | Ollama                        |
 | Language Model | Qwen 2.5 (1.5B)               |
-| Web Extraction | Python, HTTPX / HTML parsing  |
+| Web Extraction | HTTPX, HTML parsing           |
 | Testing        | Pytest, jsdom                 |
 
 ---
 
 ## 🏗️ Architecture
 
-MindVault follows a modular architecture in which a FastAPI server serves both the frontend and backend API.
+MindVault follows a modular architecture in which a FastAPI server serves both the frontend and backend APIs.
 
 ### Knowledge Processing Workflow
 
@@ -90,24 +96,26 @@ MindVault follows a modular architecture in which a FastAPI server serves both t
 6. Semantic retrieval identifies relevant information.
 7. The AI Companion uses retrieved context to generate grounded responses.
 
-### Technology Architecture
+### System Architecture
 
 ```text
-                 MindVault
-                     |
-          +----------+----------+
-          |                     |
-       Frontend              FastAPI
-    HTML/CSS/JS                 |
-                          +-----+------+
-                          |            |
-                       Routes       Services
-                          |            |
-                     +----+----+   +---+--------+
-                     |         |   |            |
-                   Notes   Bookmarks Extractors  AI
-                     |         |       |         |
-                     +---------+-------+---------+
+                       MindVault
+                           |
+                +----------+----------+
+                |                     |
+             Frontend              FastAPI
+          HTML/CSS/JS                 |
+                               +------+------+
+                               |             |
+                             Routes       Services
+                               |             |
+                     +---------+---------+   |
+                     |         |         |   |
+                   Notes   Collections  Search
+                     |         |         |
+                  Favorites   Library   Graph
+                     |         |         |
+                     +---------+---------+
                                |
                          PostgreSQL
                           + pgvector
@@ -136,7 +144,7 @@ This enables the AI Companion to answer questions using the user's own saved kno
 
 ---
 
-## 📁 Project Structure
+## 📂 Project Structure
 
 ```text
 MindVault/
@@ -183,15 +191,19 @@ cd MindVault
 
 ### 2. Start PostgreSQL with pgvector
 
+From the project root:
+
 ```bash
 docker compose -f backend/docker-compose.yml up -d
 ```
 
-### 3. Download the language model
+### 3. Install Ollama and download the language model
 
-Install Ollama from https://ollama.com.
+Install Ollama from:
 
-Then run:
+https://ollama.com
+
+Download the model:
 
 ```bash
 ollama pull qwen2.5:1.5b
@@ -212,7 +224,7 @@ pip install -r requirements.txt
 copy .env.example .env
 ```
 
-Configure the database connection and other required settings in `.env`.
+Configure the database connection, Ollama settings, and other required environment variables in `.env`.
 
 Generate a secure secret key locally:
 
@@ -220,7 +232,7 @@ Generate a secure secret key locally:
 python -c "import secrets; print(secrets.token_urlsafe(48))"
 ```
 
-Use the generated value for `SECRET_KEY`.
+Set the generated value as `SECRET_KEY`.
 
 **Never commit your `.env` file or expose authentication tokens.**
 
@@ -268,9 +280,11 @@ The real-model test requires downloading the embedding model.
 
 ## 💻 Local AI Execution
 
-MindVault uses Ollama for local AI inference and CPU-based embeddings, making it suitable for development on systems without a dedicated GPU.
+MindVault uses Ollama for local AI inference and Sentence Transformers for embeddings.
 
 The core knowledge-processing workflow is designed to run locally rather than depending on a hosted LLM API.
+
+This architecture provides a foundation for private, locally executed AI-powered knowledge management.
 
 ---
 
@@ -278,12 +292,12 @@ The core knowledge-processing workflow is designed to run locally rather than de
 
 - [ ] Improved knowledge graph exploration.
 - [ ] AI-powered document and webpage summarization.
-- [ ] Favorites and collections.
 - [ ] AI-generated flashcards.
 - [ ] Daily journal and reading list.
 - [ ] Improved knowledge recommendations.
 - [ ] Enhanced document preview and organization.
 - [ ] Browser-based knowledge capture.
+- [ ] Production deployment and cloud infrastructure.
 
 ---
 
